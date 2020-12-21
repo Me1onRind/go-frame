@@ -34,6 +34,14 @@ func Logger() gin.HandlerFunc {
 		}
 		c.Writer = lw
 
+		logger.WithTrace(getTracer(c)).WithFields(
+			logger.KV("method", c.Request.Method),
+			logger.KV("URI", c.Request.URL.Path),
+			logger.KV("rawQuery", c.Request.URL.RawQuery),
+			logger.KV("request", string(request)),
+			logger.KV("clientIP", c.ClientIP()),
+		).Info("Request begin")
+
 		start := time.Now()
 		c.Next()
 		end := time.Now()
@@ -43,9 +51,9 @@ func Logger() gin.HandlerFunc {
 			logger.KV("URI", c.Request.URL.Path),
 			logger.KV("rawQuery", c.Request.URL.RawQuery),
 			logger.KV("request", string(request)),
-			logger.KV("response", string(lw.buff.Bytes())),
 			logger.KV("clientIP", c.ClientIP()),
+			logger.KV("response", string(lw.buff.Bytes())),
 			logger.KV("cost", end.Sub(start)),
-		).Info("")
+		).Info("Request completed")
 	}
 }
