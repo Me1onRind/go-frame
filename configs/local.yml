@@ -1,0 +1,33 @@
+HttpServer:
+  RunMode: "debug"
+  Host: "0.0.0.0"
+  Port: 8080
+
+Grpc:
+  Host: "0.0.0.0"
+  Port: 8081
+
+Mysql:
+  Host: "localhost"
+  Port: 3306
+  DBName: "go-frame"
+  Username: "root"
+  Password: "guapi123"
+  ConnectTimeout: "1s"
+  ReadTimeout: "1s"
+  WriteTimeout: "1s"
+  MaxIdleConns: 10
+  MaxOpenConns: 100
+  ConnectMaxLifeTime: "5s"
+
+Logger:
+  Info:
+    LogDir: "./log"
+    LogName: "info.log"
+    MaxAge: "168h"
+    RotateTimeDuration: "1h"
+  Error:
+    LogDir: "./log"
+    LogName: "error.log"
+    MaxAge: "168h"
+    RotateTimeDuration: "1h"

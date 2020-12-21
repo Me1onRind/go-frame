@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package pb;
+
+service UserService {
+    rpc GetUserInfo (GetUserRequest) returns (UserInfo) {}
+}
+
+message GetUserRequest {
+    uint64 userID = 1;
+}
+
+message UserInfo {
+    uint64 userID = 1;
+    string username = 2;
+}
