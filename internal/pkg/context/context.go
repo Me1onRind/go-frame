@@ -22,7 +22,8 @@ type Context interface {
 }
 
 type contextS struct {
-	txs map[string]*gorm.DB
+	reqeustID string
+	txs       map[string]*gorm.DB
 }
 
 func newContextS() *contextS {
@@ -85,4 +86,8 @@ func (c *contextS) Transaction(dbKey string, fc TranscationFunc) (err *errcode.E
 
 	paniced = false
 	return err
+}
+
+func (c *contextS) RequestID() string {
+	return c.reqeustID
 }

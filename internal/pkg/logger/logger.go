@@ -9,10 +9,6 @@ import (
 
 type Level uint8
 
-type Tracer interface {
-	RequestID() string
-}
-
 const (
 	LevelDebug Level = iota
 	LevelInfo

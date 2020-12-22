@@ -3,31 +3,21 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 	uuid "github.com/satori/go.uuid"
+	"go-frame/global"
+	"go-frame/internal/pkg/logger"
 )
-
-const (
-	requestIDKey = "requestID"
-)
-
-type tracer struct {
-	requestID string
-}
-
-func (t *tracer) RequestID() string {
-	return t.requestID
-}
 
 func setRequestID(c *gin.Context) {
-	xRequestID := c.GetHeader("X-Request-ID")
+	xRequestID := c.GetHeader(global.ProtocolRequestIDKey)
 	if len(xRequestID) == 0 {
 		xRequestID = uuid.NewV4().String()
 	}
-	c.Set(requestIDKey, xRequestID)
+	c.Set(global.ContextRequestIDKey, xRequestID)
 }
 
-func getTracer(c *gin.Context) *tracer {
-	requestID := c.MustGet(requestIDKey).(string)
-	return &tracer{
-		requestID: requestID,
+func getTracer(c *gin.Context) *logger.SimpleTracer {
+	requestID := c.MustGet(global.ContextRequestIDKey).(string)
+	return &logger.SimpleTracer{
+		ReqID: requestID,
 	}
 }

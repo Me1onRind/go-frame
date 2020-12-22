@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/grpc-ecosystem/go-grpc-middleware"
 	"go-frame/global"
 	"go-frame/internal/controller/grpc/user"
 	"go-frame/internal/initialize"
+	"go-frame/internal/pkg/interceptor"
 	"go-frame/internal/pkg/setting"
 	"go-frame/proto/pb"
 	"google.golang.org/grpc"
@@ -40,7 +42,13 @@ func SetGrpcSetting() error {
 }
 
 func main() {
-	s := grpc.NewServer()
+	opts := []grpc.ServerOption{
+		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+			interceptor.Logger,
+		)),
+	}
+
+	s := grpc.NewServer(opts...)
 	pb.RegisterUserServiceServer(s, user.NewUserGrpcController())
 
 	st := global.GrpcServerSetting
