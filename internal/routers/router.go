@@ -12,5 +12,9 @@ func NewRouter() *gin.Engine {
 
 	apiRouter := r.Group("/api")
 	registerUserApi(apiRouter, "/user")
+
+	adminRouter := r.Group("/admin")
+	adminRouter := 
+
 	return r
 }
