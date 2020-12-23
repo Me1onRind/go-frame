@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/Me1onRind/logrotate v0.0.0-20201207055048-cc28c78da981
+	github.com/gin-contrib/sessions v0.0.3
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/golang/protobuf v1.4.3
