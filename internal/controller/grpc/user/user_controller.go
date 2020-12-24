@@ -2,13 +2,18 @@ package user
 
 import (
 	"context"
+	"go-frame/internal/service/user"
 	"go-frame/proto/pb"
 )
 
-type UserGrpcController struct{}
+type UserGrpcController struct {
+	UserService *user.UserService
+}
 
 func NewUserGrpcController() *UserGrpcController {
-	return &UserGrpcController{}
+	return &UserGrpcController{
+		UserService: user.NewUserService(),
+	}
 }
 
 func (u *UserGrpcController) GetUserInfo(ctx context.Context, request *pb.GetUserRequest) (*pb.UserInfo, error) {

@@ -2,6 +2,9 @@ HttpServer:
   RunMode: "debug"
   Host: "0.0.0.0"
   Port: 8080
+  Cookies:
+      StoreType: "CookieStore"
+      SecretKey: "*fhjebd8&*#2"
 
 GrpcServer:
   Host: "0.0.0.0"

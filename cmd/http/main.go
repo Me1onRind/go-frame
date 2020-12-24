@@ -24,6 +24,9 @@ func init() {
 	if err := validation.RegisterGinValidation(); err != nil {
 		panic(err)
 	}
+	if err := initialize.SetupCookie(); err != nil {
+		panic(err)
+	}
 }
 
 func SetupHttpSetting() error {

@@ -12,7 +12,7 @@ type registerS struct {
 }
 
 var toRegister = []registerS{
-	{"userType", UserType},
+	{"passwd", password},
 }
 
 func RegisterGinValidation() error {

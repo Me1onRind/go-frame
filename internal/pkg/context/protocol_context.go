@@ -12,6 +12,7 @@ type HttpContext struct {
 
 	*contextS
 	*gin.Context
+
 	reqeustID string
 }
 

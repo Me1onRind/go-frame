@@ -2,11 +2,28 @@ package validation
 
 import (
 	"github.com/go-playground/validator/v10"
-	"go-frame/internal/constant/user_constant"
-	"go-frame/internal/utils/slice"
 )
 
-func UserType(fl validator.FieldLevel) bool {
-	value := uint8(fl.Field().Uint())
-	return slice.InSliceUint8(value, user_constant.AllUserType)
+func password(fl validator.FieldLevel) bool {
+	value := []byte(fl.Field().String())
+	if len(value) < 8 || len(value) > 16 {
+		return false
+	}
+
+	var numberNum, upperNum, lowerNum int
+	for _, v := range value {
+		if v >= '0' && v <= '9' {
+			numberNum++
+		}
+
+		if v >= 'A' && v <= 'Z' {
+			upperNum++
+		}
+
+		if v >= 'a' && v <= 'z' {
+			lowerNum++
+		}
+	}
+
+	return numberNum > 0 && upperNum > 0 && lowerNum > 0
 }

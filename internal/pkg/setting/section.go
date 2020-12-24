@@ -8,6 +8,10 @@ type HttpServerSettingS struct {
 	RunMode string
 	Host    string
 	Port    uint32
+	Cookies struct {
+		StoreType string
+		SecretKey string
+	}
 }
 
 type GrpcServerSettingS struct {

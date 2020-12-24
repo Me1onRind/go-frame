@@ -1,10 +1,13 @@
-package model
+package user
+
+import (
+	"go-frame/internal/utils/base"
+)
 
 type User struct {
-	*Model
+	*base.Model
 	Username string `gorm:"column:username"`
-	Passwd   string `gorm:"column:passwd"`
-	GroupId  uint64 `gorm:"column:group_id"`
+	Password string `gorm:"column:password"`
 }
 
 func (u *User) TableName() string {

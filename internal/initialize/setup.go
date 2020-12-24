@@ -1,7 +1,9 @@
 package initialize
 
 import (
+	"fmt"
 	"github.com/Me1onRind/logrotate"
+	"github.com/gorilla/sessions"
 	"go-frame/global"
 	"go-frame/internal/pkg/logger"
 	"go-frame/internal/pkg/setting"
@@ -49,6 +51,16 @@ func SetupLogger() error {
 		Separate:   '|',
 	}
 	logger.SetLogger(logger.NewLogger(loggerConfig))
+	return nil
+}
+
+func SetupCookie() error {
+	cookiesSetting := global.HttpServerSetting.Cookies
+	if cookiesSetting.StoreType == "CookieStore" {
+		global.CookieStore = sessions.NewCookieStore([]byte(cookiesSetting.SecretKey))
+	} else {
+		return fmt.Errorf("Unsupport storeType:%s", cookiesSetting.StoreType)
+	}
 	return nil
 }
 

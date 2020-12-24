@@ -8,6 +8,8 @@ const (
 	RedisErrorCode      int = 1000003
 	RecordNotFoundCode  int = 1000004
 	CopyStructErrorCode int = 1000005
+
+	InvalidLoginParamCode int = 2000000
 )
 
 var (
@@ -18,4 +20,6 @@ var (
 	RedisError      = NewError(RedisErrorCode, "Redis Error")
 	RecordNotFound  = NewError(RecordNotFoundCode, "Record Not Found")
 	CopyStructError = NewError(CopyStructErrorCode, "Copy Struct Error")
+
+	InvalidLoginParamError = NewError(InvalidLoginParamCode, "Invalid Username Or Password")
 )

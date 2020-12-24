@@ -1,4 +1,4 @@
-package model
+package base
 
 type Model struct {
 	ID    uint64 `gorm:"column:id"`

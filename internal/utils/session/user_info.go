@@ -17,14 +17,14 @@ type UserInfo struct {
 }
 
 func SetUserInfo(c *gin.Context, userInfo *UserInfo) {
-	session, _ := global.CookieStore.Get(c.Request, "sessionName")
+	session, _ := global.CookieStore.Get(c.Request, global.UserSessionName)
 	userInfoBytes, _ := json.Marshal(userInfo)
 	session.Values[UserInfoKey] = userInfoBytes
 	session.Save(c.Request, c.Writer)
 }
 
 func GetUserInfo(c *gin.Context) *UserInfo {
-	session, _ := global.CookieStore.Get(c.Request, "sessionName")
+	session, _ := global.CookieStore.Get(c.Request, global.UserSessionName)
 	if value, ok := session.Values[UserInfoKey]; ok {
 		if userInfoBytes, ok := value.([]byte); ok {
 			var userInfo UserInfo
