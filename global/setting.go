@@ -11,4 +11,5 @@ var (
 	MysqlSetting       *setting.DBSettingS
 	InfoLoggerSetting  *setting.LoggerSettingS
 	ErrorLoggerSetting *setting.LoggerSettingS
+	JWTSetting         *setting.JWTSettingS
 )

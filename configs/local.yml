@@ -34,3 +34,8 @@ Logger:
     LogName: "error.log"
     MaxAge: "168h"
     RotateTimeDuration: "1h"
+
+JWT:
+    Issuser: "mr"
+    Secret: "dfhwehkn323"
+    Expire: "3600s"

@@ -21,7 +21,7 @@ func Logger(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, ha
 
 	logger.WithTrace(getTracer(ctx)).WithFields(
 		logger.KV("fullMethod", info.FullMethod),
-		logger.KV("reqestParams", req),
+		logger.KV("req", req),
 		logger.KV("resp", resp),
 		logger.KV("cost", end.Sub(startTime)),
 	).Info("Request completed")

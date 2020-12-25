@@ -3,9 +3,9 @@ package user
 import (
 	"go-frame/internal/pkg/context"
 	"go-frame/internal/pkg/errcode"
-	"go-frame/internal/protocol/user_proto"
 	"go-frame/internal/service/user"
 	"go-frame/internal/utils/session"
+	"go-frame/protocol/user_proto"
 )
 
 type UserController struct {

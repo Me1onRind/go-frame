@@ -2,6 +2,7 @@ package logger
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"runtime"
 	"time"
@@ -36,6 +37,11 @@ type Field struct {
 
 func KV(key string, value interface{}) *Field {
 	return &Field{key, value}
+}
+
+func JSONKV(key string, value interface{}) *Field {
+	jsonStr, _ := json.Marshal(value)
+	return &Field{key, string(jsonStr)}
 }
 
 type Logger struct {

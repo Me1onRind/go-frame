@@ -6,8 +6,9 @@ import (
 )
 
 type Error struct {
-	Code int    `json:"code"`
-	Msg  string `json:"msg"`
+	Code        int    `json:"code"`
+	Msg         string `json:"msg"`
+	OriginError error  `json:"-"`
 }
 
 var codes = map[int]struct{}{}
@@ -17,7 +18,7 @@ func NewError(code int, msg string) *Error {
 		panic(fmt.Sprintf("Error code:%d is duplicate", code))
 	}
 	codes[code] = struct{}{}
-	return &Error{code, msg}
+	return &Error{code, msg, nil}
 }
 
 func (e *Error) WithInfo(info string) *Error {
@@ -33,7 +34,9 @@ func (e *Error) WithInfof(format string, args ...interface{}) *Error {
 }
 
 func (e *Error) WithError(err error) *Error {
-	return e.WithInfo(err.Error())
+	newErr := e.WithInfo(err.Error())
+	newErr.OriginError = err
+	return newErr
 }
 
 func (e *Error) ToRpcError() error {

@@ -39,3 +39,9 @@ type LoggerSettingS struct {
 	RotateTimeDuration time.Duration
 	MaxAge             time.Duration
 }
+
+type JWTSettingS struct {
+	Issuser string
+	Secret  string
+	Expire  time.Duration
+}

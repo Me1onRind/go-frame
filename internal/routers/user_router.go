@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go-frame/internal/controller/http/user"
 	"go-frame/internal/pkg/gateway"
-	"go-frame/internal/protocol/user_proto"
+	"go-frame/protocol/user_proto"
 )
 
 func registerUserApi(router *gin.RouterGroup) {

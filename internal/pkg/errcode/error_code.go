@@ -10,6 +10,9 @@ const (
 	CopyStructErrorCode int = 1000005
 
 	InvalidLoginParamCode int = 2000000
+	JWTSignedFailCode     int = 2000001
+	JWTAuthorizedFailCode int = 2000002
+	JWTTimeoutCode        int = 2000003
 )
 
 var (
@@ -22,4 +25,7 @@ var (
 	CopyStructError = NewError(CopyStructErrorCode, "Copy Struct Error")
 
 	InvalidLoginParamError = NewError(InvalidLoginParamCode, "Invalid Username Or Password")
+	JWTSignedFailError     = NewError(JWTSignedFailCode, "JWT Signed Fail")
+	JWTAuthorizedFailError = NewError(JWTAuthorizedFailCode, "JWT Authorized Fail")
+	JWTTimeoutError        = NewError(JWTTimeoutCode, "JWT Timeout")
 )

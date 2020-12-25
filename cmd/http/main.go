@@ -34,19 +34,20 @@ func SetupHttpSetting() error {
 	if err != nil {
 		return err
 	}
-	if err := st.ReadSection("HttpServer", &global.HttpServerSetting); err != nil {
-		return err
-	}
-	if err := st.ReadSection("Mysql", &global.MysqlSetting); err != nil {
-		return err
-	}
-	if err := st.ReadSection("Logger.Info", &global.InfoLoggerSetting); err != nil {
-		return err
-	}
-	if err := st.ReadSection("Logger.Error", &global.ErrorLoggerSetting); err != nil {
-		return err
+
+	LoadSections := map[string]interface{}{
+		"HttpServer":   &global.HttpServerSetting,
+		"Mysql":        &global.MysqlSetting,
+		"Logger.Info":  &global.InfoLoggerSetting,
+		"Logger.Error": &global.ErrorLoggerSetting,
+		"JWT":          &global.JWTSetting,
 	}
 
+	for k, v := range LoadSections {
+		if err := st.ReadSection(k, v); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
