@@ -52,8 +52,10 @@ func SetGrpcSetting() error {
 func main() {
 	opts := []grpc.ServerOption{
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+			interceptor.NewContext,
 			interceptor.Logger,
 			interceptor.Recover,
+			interceptor.JWT,
 		)),
 	}
 

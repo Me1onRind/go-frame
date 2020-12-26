@@ -2,14 +2,15 @@ package interceptor
 
 import (
 	"context"
+	newContext "go-frame/internal/pkg/context"
 	"go-frame/internal/pkg/logger"
 	"google.golang.org/grpc"
 	"time"
 )
 
 func Logger(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-	ctx = setRequestID(ctx)
-	logger.WithTrace(getTracer(ctx)).WithFields(
+	newCtx := ctx.(*newContext.CommonContext)
+	logger.WithTrace(newCtx).WithFields(
 		logger.KV("fullMethod", info.FullMethod),
 		logger.KV("req", req),
 		logger.KV("clientIP", info.FullMethod),
@@ -19,7 +20,7 @@ func Logger(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, ha
 	resp, err := handler(ctx, req)
 	end := time.Now()
 
-	logger.WithTrace(getTracer(ctx)).WithFields(
+	logger.WithTrace(newCtx).WithFields(
 		logger.KV("fullMethod", info.FullMethod),
 		logger.KV("req", req),
 		logger.KV("resp", resp),

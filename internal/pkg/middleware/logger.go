@@ -3,6 +3,7 @@ package middleware
 import (
 	"bytes"
 	"github.com/gin-gonic/gin"
+	"go-frame/global"
 	"go-frame/internal/pkg/logger"
 	"io/ioutil"
 	"time"
@@ -20,7 +21,8 @@ func (w *logWriter) Write(b []byte) (int, error) {
 
 func Logger() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		setRequestID(c)
+		xRequestID := getRequestID(c)
+		c.Set(global.ContextRequestIDKey, xRequestID)
 
 		request, err := c.GetRawData()
 		if err != nil {

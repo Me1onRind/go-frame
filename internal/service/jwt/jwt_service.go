@@ -7,6 +7,7 @@ import (
 	"go-frame/internal/pkg/errcode"
 	"go-frame/internal/pkg/logger"
 	"go-frame/internal/utils/auth"
+	"go-frame/internal/utils/encode"
 	"time"
 )
 

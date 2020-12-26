@@ -3,7 +3,6 @@ package auth
 import (
 	"github.com/dgrijalva/jwt-go"
 	"go-frame/global"
-	"go-frame/internal/pkg/context"
 	"go-frame/internal/pkg/errcode"
 	"go-frame/internal/pkg/logger"
 	"go-frame/internal/utils/encode"
@@ -16,7 +15,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-func GenerateToken(ctx context.Context, appKey, appSecret string) (string, int64, *errcode.Error) {
+func GenerateToken(tracer logger.Tracer, appKey, appSecret string) (string, int64, *errcode.Error) {
 	nowTime := time.Now()
 	jwtSetting := global.JWTSetting
 	expireAt := nowTime.Add(jwtSetting.Expire).Unix()
@@ -30,7 +29,7 @@ func GenerateToken(ctx context.Context, appKey, appSecret string) (string, int64
 		},
 	}
 
-	logger.WithTrace(ctx).WithFields(
+	logger.WithTrace(tracer).WithFields(
 		logger.JSONKV("claims", claims), logger.KV("secret", jwtSetting.Secret),
 	).Info("jwt signed")
 	tokenClainms := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -41,7 +40,8 @@ func GenerateToken(ctx context.Context, appKey, appSecret string) (string, int64
 	return token, expireAt, nil
 }
 
-func JWTAuth(token string) *errcode.Error {
+func JWTAuth(tracer logger.Tracer, token string) *errcode.Error {
+	logger.WithTrace(tracer).Infof("jwt token:%s", token)
 	_, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(global.JWTSetting.Secret), nil
 	})

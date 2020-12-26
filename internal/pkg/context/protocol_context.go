@@ -34,22 +34,29 @@ type CommonContext struct {
 	context.Context
 }
 
-func NewCommonContext(ctx context.Context) *CommonContext {
+type CommonCtxOption func(ctx *CommonContext)
+
+func NewCommonContext(ctx context.Context, opts ...CommonCtxOption) *CommonContext {
 	c := &CommonContext{
 		contextS: newContextS(),
 		Context:  ctx,
 	}
 
-	val := ctx.Value(global.ContextRequestIDKey)
-	if val != nil {
-		if requestID, ok := val.(string); ok {
-			c.contextS.reqeustID = requestID
-		}
-	}
-
-	if len(c.contextS.reqeustID) == 0 {
-		c.contextS.reqeustID = uuid.NewV4().String()
+	for _, opt := range opts {
+		opt(c)
 	}
 
 	return c
+}
+
+func WithRequestID(reqeustID string) CommonCtxOption {
+	return func(ctx *CommonContext) {
+		ctx.contextS.reqeustID = reqeustID
+	}
+}
+
+func WithAutoRequestID() CommonCtxOption {
+	return func(ctx *CommonContext) {
+		ctx.contextS.reqeustID = uuid.NewV4().String()
+	}
 }

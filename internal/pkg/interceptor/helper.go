@@ -4,27 +4,24 @@ import (
 	"context"
 	uuid "github.com/satori/go.uuid"
 	"go-frame/global"
-	"go-frame/internal/pkg/logger"
 	"google.golang.org/grpc/metadata"
 )
 
-func setRequestID(ctx context.Context) context.Context {
+func getRequestID(ctx context.Context) string {
 	md, _ := metadata.FromIncomingContext(ctx)
 	values := md.Get(global.ProtocolRequestIDKey)
 
-	var xRequestID string
 	if len(values) == 0 {
-		xRequestID = uuid.NewV4().String()
-	} else {
-		xRequestID = values[0]
+		return uuid.NewV4().String()
 	}
-
-	return context.WithValue(ctx, global.ContextRequestIDKey, xRequestID)
+	return values[0]
 }
 
-func getTracer(c context.Context) *logger.SimpleTracer {
-	requestID := c.Value(global.ContextRequestIDKey).(string)
-	return &logger.SimpleTracer{
-		ReqID: requestID,
+func getJWTToken(ctx context.Context) string {
+	md, _ := metadata.FromIncomingContext(ctx)
+	values := md.Get(global.ProtocolJWTTokenKey)
+	if len(values) == 0 {
+		return ""
 	}
+	return values[0]
 }

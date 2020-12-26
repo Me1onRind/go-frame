@@ -7,12 +7,12 @@ import (
 	"go-frame/internal/pkg/logger"
 )
 
-func setRequestID(c *gin.Context) {
+func getRequestID(c *gin.Context) string {
 	xRequestID := c.GetHeader(global.ProtocolRequestIDKey)
 	if len(xRequestID) == 0 {
 		xRequestID = uuid.NewV4().String()
 	}
-	c.Set(global.ContextRequestIDKey, xRequestID)
+	return xRequestID
 }
 
 func getTracer(c *gin.Context) *logger.SimpleTracer {
