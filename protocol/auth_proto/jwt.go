@@ -1,4 +1,4 @@
-package jwt_proto
+package auth_proto
 
 type GenerateTokenReq struct {
 	AppKey    string `form:"app_key" binding:"required"`

@@ -1,7 +1,7 @@
 package user
 
 import (
-	"go-frame/internal/utils/base"
+	"go-frame/internal/lib/base"
 )
 
 type User struct {

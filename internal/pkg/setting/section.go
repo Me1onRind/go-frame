@@ -41,7 +41,6 @@ type LoggerSettingS struct {
 }
 
 type JWTSettingS struct {
-	Issuser string
-	Secret  string
-	Expire  time.Duration
+	Issuer string
+	Secret string
 }

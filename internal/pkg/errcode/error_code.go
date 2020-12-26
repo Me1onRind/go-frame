@@ -13,6 +13,7 @@ const (
 	JWTSignedFailCode     int = 2000001
 	JWTAuthorizedFailCode int = 2000002
 	JWTTimeoutCode        int = 2000003
+	AppSecretWrongCode    int = 2000004
 )
 
 var (
@@ -28,4 +29,5 @@ var (
 	JWTSignedFailError     = NewError(JWTSignedFailCode, "JWT Signed Fail")
 	JWTAuthorizedFailError = NewError(JWTAuthorizedFailCode, "JWT Authorized Fail")
 	JWTTimeoutError        = NewError(JWTTimeoutCode, "JWT Timeout")
+	AppSecretWrongError    = NewError(AppSecretWrongCode, "App Secret Wrong")
 )

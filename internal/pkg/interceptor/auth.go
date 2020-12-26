@@ -2,8 +2,8 @@ package interceptor
 
 import (
 	"context"
+	"go-frame/internal/lib/auth"
 	newContext "go-frame/internal/pkg/context"
-	"go-frame/internal/utils/auth"
 	"google.golang.org/grpc"
 )
 

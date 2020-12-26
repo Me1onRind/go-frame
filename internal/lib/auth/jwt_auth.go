@@ -15,29 +15,36 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-func GenerateToken(tracer logger.Tracer, appKey, appSecret string) (string, int64, *errcode.Error) {
-	nowTime := time.Now()
-	jwtSetting := global.JWTSetting
-	expireAt := nowTime.Add(jwtSetting.Expire).Unix()
+type GenerateJwtTokenParam struct {
+	AppKey    string
+	AppSecret string
+	Expires   time.Duration
+}
 
+func GenerateJwtToken(tracer logger.Tracer, param *GenerateJwtTokenParam) (string, int64, *errcode.Error) {
+	jwtSestting := global.JWTSetting
 	claims := &Claims{
-		AppKey:    encode.MD5(appKey),
-		AppSecret: encode.MD5(appSecret),
+		AppKey:    encode.MD5(param.AppKey),
+		AppSecret: encode.MD5(param.AppSecret),
 		StandardClaims: jwt.StandardClaims{
-			Issuer:    jwtSetting.Issuser,
-			ExpiresAt: expireAt,
+			Issuer: jwtSestting.Issuer,
 		},
 	}
 
+	if param.Expires > 0 {
+		nowTime := time.Now()
+		claims.StandardClaims.ExpiresAt = nowTime.Add(time.Duration(param.Expires) * time.Second).Unix()
+	}
+
 	logger.WithTrace(tracer).WithFields(
-		logger.JSONKV("claims", claims), logger.KV("secret", jwtSetting.Secret),
+		logger.JSONKV("claims", claims), logger.KV("secret", jwtSestting.Secret),
 	).Info("jwt signed")
 	tokenClainms := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token, err := tokenClainms.SignedString([]byte(jwtSetting.Secret))
+	token, err := tokenClainms.SignedString([]byte(jwtSestting.Secret))
 	if err != nil {
 		return "", 0, errcode.JWTSignedFailError.WithError(err)
 	}
-	return token, expireAt, nil
+	return token, claims.ExpiresAt, nil
 }
 
 func JWTAuth(tracer logger.Tracer, token string) *errcode.Error {
