@@ -15,8 +15,11 @@ type HttpServerSettingS struct {
 }
 
 type GrpcServerSettingS struct {
-	Host string
-	Port uint32
+	Host             string
+	Port             uint32
+	Name             string
+	RegistryTimeout  time.Duration
+	RegistryInterVal time.Duration
 }
 
 type DBSettingS struct {
@@ -43,4 +46,8 @@ type LoggerSettingS struct {
 type JWTSettingS struct {
 	Issuer string
 	Secret string
+}
+
+type EtcdSettingS struct {
+	Addresses []string
 }

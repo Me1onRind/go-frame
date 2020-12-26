@@ -3,6 +3,8 @@ package errcode
 import (
 	"fmt"
 	"go-frame/proto/pb"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type Error struct {
@@ -11,13 +13,13 @@ type Error struct {
 	OriginError error  `json:"-"`
 }
 
-var codes = map[int]struct{}{}
+var usedCodes = map[int]struct{}{}
 
 func NewError(code int, msg string) *Error {
-	if _, ok := codes[code]; ok {
+	if _, ok := usedCodes[code]; ok {
 		panic(fmt.Sprintf("Error code:%d is duplicate", code))
 	}
-	codes[code] = struct{}{}
+	usedCodes[code] = struct{}{}
 	return &Error{code, msg, nil}
 }
 
@@ -39,6 +41,25 @@ func (e *Error) WithError(err error) *Error {
 	return newErr
 }
 
+func toGrpcCode(code int) codes.Code {
+	var statusCode codes.Code
+	switch code {
+	case ServerErrorCode:
+		statusCode = codes.Internal
+	case InvalidParamCode:
+		statusCode = codes.InvalidArgument
+	case JWTAuthorizedFailCode, JWTTimeoutCode:
+		statusCode = codes.Unauthenticated
+	case RecordNotFoundCode:
+		statusCode = codes.NotFound
+	default:
+		statusCode = codes.Unknown
+	}
+	return statusCode
+}
+
 func (e *Error) ToRpcError() error {
-	return &pb.Error{Errcode: int32(e.Code), Message: e.Msg}
+	grpcCode := toGrpcCode(e.Code)
+	s, _ := status.New(grpcCode, e.Msg).WithDetails(&pb.Error{Errcode: int32(e.Code), Message: e.Msg})
+	return s.Err()
 }

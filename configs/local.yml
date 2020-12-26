@@ -9,6 +9,9 @@ HttpServer:
 GrpcServer:
   Host: "0.0.0.0"
   Port: 8081
+  Name: "go-frame-grpc"
+  RegistryTimeout: "3s"
+  RegistryInterVal: "5s"
 
 Mysql:
   Host: "localhost"
@@ -38,4 +41,10 @@ Logger:
 JWT:
     Issuser: "mr"
     Secret: "dfhwehkn323"
-    Expire: "3600s"
+
+Etcd:
+    Addresses:
+        - "127.0.0.1:2379"
+        - "127.0.0.1:2381"
+        - "127.0.0.1:2383"
+

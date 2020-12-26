@@ -16,9 +16,8 @@ func NewUserGrpcController() *UserGrpcController {
 	}
 }
 
-func (u *UserGrpcController) GetUserInfo(ctx context.Context, request *pb.GetUserRequest) (*pb.UserInfo, error) {
-	return &pb.UserInfo{
-		UserID:   1,
-		Username: "username",
-	}, nil
+func (u *UserGrpcController) GetUserInfo(ctx context.Context, req *pb.GetUserReq, resp *pb.UserInfo) error {
+	resp.UserID = 1
+	resp.Username = "username"
+	return nil
 }

@@ -12,4 +12,5 @@ var (
 	InfoLoggerSetting  *setting.LoggerSettingS
 	ErrorLoggerSetting *setting.LoggerSettingS
 	JWTSetting         *setting.JWTSettingS
+	EtcdSetting        *setting.EtcdSettingS
 )

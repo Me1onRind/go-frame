@@ -30,7 +30,6 @@ type Error struct {
 
 func (m *Error) Reset()         { *m = Error{} }
 func (m *Error) String() string { return proto.CompactTextString(m) }
-func (m *Error) Error() string  { return m.Message }
 func (*Error) ProtoMessage()    {}
 func (*Error) Descriptor() ([]byte, []int) {
 	return fileDescriptor_77a6da22d6a3feb1, []int{0}
@@ -72,9 +71,7 @@ func init() {
 	proto.RegisterType((*Error)(nil), "pb.Error")
 }
 
-func init() {
-	proto.RegisterFile("rpc.proto", fileDescriptor_77a6da22d6a3feb1)
-}
+func init() { proto.RegisterFile("rpc.proto", fileDescriptor_77a6da22d6a3feb1) }
 
 var fileDescriptor_77a6da22d6a3feb1 = []byte{
 	// 91 bytes of a gzipped FileDescriptorProto

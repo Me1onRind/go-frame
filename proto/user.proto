@@ -3,10 +3,10 @@ syntax = "proto3";
 package pb;
 
 service UserService {
-    rpc GetUserInfo (GetUserRequest) returns (UserInfo) {}
+    rpc GetUserInfo (GetUserReq) returns (UserInfo) {}
 }
 
-message GetUserRequest {
+message GetUserReq {
     uint64 userID = 1;
 }
 

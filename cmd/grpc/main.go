@@ -2,15 +2,15 @@ package main
 
 import (
 	"fmt"
-	"github.com/grpc-ecosystem/go-grpc-middleware"
+	"github.com/micro/go-micro/v2"
+	"github.com/micro/go-micro/v2/registry"
+	"github.com/micro/go-plugins/registry/etcdv3/v2"
 	"go-frame/global"
 	"go-frame/internal/controller/grpc/user"
 	"go-frame/internal/initialize"
-	"go-frame/internal/pkg/interceptor"
 	"go-frame/internal/pkg/setting"
+	"go-frame/internal/pkg/wrapper"
 	"go-frame/proto/pb"
-	"google.golang.org/grpc"
-	"net"
 )
 
 func init() {
@@ -39,6 +39,7 @@ func SetGrpcSetting() error {
 		"Logger.Info":  &global.InfoLoggerSetting,
 		"Logger.Error": &global.ErrorLoggerSetting,
 		"JWT":          &global.JWTSetting,
+		"Etcd":         &global.EtcdSetting,
 	}
 
 	for k, v := range LoadSections {
@@ -50,26 +51,29 @@ func SetGrpcSetting() error {
 }
 
 func main() {
-	opts := []grpc.ServerOption{
-		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
-			interceptor.NewContext,
-			interceptor.Logger,
-			interceptor.Recover,
-			interceptor.JWT,
-		)),
-	}
-
-	s := grpc.NewServer(opts...)
-	pb.RegisterUserServiceServer(s, user.NewUserGrpcController())
-
 	st := global.GrpcServerSetting
-	lis, err := net.Listen("tcp", fmt.Sprintf("%s:%d", st.Host, st.Port))
-	if err != nil {
-		panic(err)
-	}
+	address := fmt.Sprintf("%s:%d", st.Host, st.Port)
 
-	fmt.Printf("Start grpc server %s\n", fmt.Sprintf("%s:%d", st.Host, st.Port))
-	if err := s.Serve(lis); err != nil {
+	service := micro.NewService(
+		micro.Name(global.GrpcServerSetting.Name),
+		micro.Version("latest"),
+		micro.Address(address),
+		micro.WrapHandler(
+			wrapper.NewContext,
+			wrapper.Logger,
+			wrapper.Recover,
+			wrapper.JWT,
+		),
+		micro.Registry(etcdv3.NewRegistry(
+			registry.Addrs(global.EtcdSetting.Addresses...),
+			registry.Timeout(st.RegistryTimeout),
+		)),
+		micro.RegisterInterval(st.RegistryInterVal),
+	)
+
+	service.Init()
+	pb.RegisterUserServiceHandler(service.Server(), user.NewUserGrpcController())
+	if err := service.Run(); err != nil {
 		panic(err)
 	}
 }
