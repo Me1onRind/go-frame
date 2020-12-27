@@ -5,5 +5,5 @@ import (
 )
 
 func InitGrpcClient() {
-	grpc.InitClient()
+	grpc.InitClients()
 }

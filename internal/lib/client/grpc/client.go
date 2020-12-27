@@ -17,7 +17,7 @@ var (
 	GoFrameClient pb.UserService
 )
 
-func InitClient() {
+func InitClients() {
 	GoFrameClient = pb.NewUserService("go-frame-grpc", initServiceClient("go-frame-grpc.client"))
 }
 
@@ -31,13 +31,11 @@ func JwtContext(ctx customContext.Context, jwtToken string) context.Context {
 func initServiceClient(microName string) client.Client {
 	service := micro.NewService(
 		micro.Name(microName),
-		micro.RegisterInterval(5*time.Second),
 		micro.Registry(etcdv3.NewRegistry(
 			registry.Addrs(global.EtcdSetting.Addresses...),
 			registry.Timeout(5*time.Second),
 		)),
 	)
 	service.Init()
-	/*cli := client.NewClient()*/
 	return service.Client()
 }
