@@ -1,17 +1,20 @@
 package logger
 
 type Tracer interface {
-	RequestID() string
-	TraceID() string
-	SpandID() string
+	PrefixFields() []*Field
 }
 
 type SimpleTracer struct {
-	ReqID string
-	TraID string
-	SpaID string
+	ReqID    string
+	prefixKV []*Field
 }
 
-func (t *SimpleTracer) RequestID() string {
-	return t.ReqID
+func NewSimpleTracer(fields ...*Field) *SimpleTracer {
+	return &SimpleTracer{
+		prefixKV: fields,
+	}
+}
+
+func (t *SimpleTracer) PrefixFields() []*Field {
+	return t.prefixKV
 }
