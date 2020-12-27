@@ -1,10 +1,10 @@
 package user
 
 import (
+	"go-frame/internal/lib/session"
 	"go-frame/internal/pkg/context"
 	"go-frame/internal/pkg/errcode"
 	"go-frame/internal/service/user"
-	"go-frame/internal/utils/session"
 	"go-frame/protocol/user_proto"
 )
 
@@ -32,4 +32,14 @@ func (u *UserController) Login(ctx *context.HttpContext) (interface{}, *errcode.
 	session.SetUserInfo(ctx.Context, sessionUserInfo)
 
 	return sessionUserInfo, nil
+}
+
+func (u *UserController) GetUserInfo(ctx *context.HttpContext) (interface{}, *errcode.Error) {
+	request := ctx.Raw.(*user_proto.GetUserInfoReq)
+	userInfo, err := u.UserService.GetUserFromRemote(ctx, request.UserID)
+	if err != nil {
+		return nil, err
+	}
+
+	return userInfo, nil
 }

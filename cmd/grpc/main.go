@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/micro/go-micro/v2"
+	micro "github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/registry"
+	//"github.com/micro/go-micro/v2/server"
 	"github.com/micro/go-plugins/registry/etcdv3/v2"
 	"go-frame/global"
 	"go-frame/internal/controller/grpc/user"
@@ -58,20 +59,34 @@ func main() {
 		micro.Name(global.GrpcServerSetting.Name),
 		micro.Version("latest"),
 		micro.Address(address),
-		micro.WrapHandler(
-			wrapper.NewContext,
-			wrapper.Logger,
-			wrapper.Recover,
-			wrapper.JWT,
-		),
 		micro.Registry(etcdv3.NewRegistry(
 			registry.Addrs(global.EtcdSetting.Addresses...),
 			registry.Timeout(st.RegistryTimeout),
 		)),
-		micro.RegisterInterval(st.RegistryInterVal),
+		micro.WrapHandler(
+			wrapper.NewContext,
+			wrapper.Logger,
+			wrapper.JWT,
+			wrapper.ErrHandler,
+		),
 	)
 
-	service.Init()
+	//server.Init(
+	//server.Name(global.GrpcServerSetting.Name),
+	//server.Version("latest"),
+	//server.Address(address),
+	//server.Registry(etcdv3.NewRegistry(
+	//registry.Addrs(global.EtcdSetting.Addresses...),
+	//registry.Timeout(st.RegistryTimeout),
+	//)),
+	//server.RegisterInterval(st.RegistryInterVal),
+
+	//server.WrapHandler(wrapper.NewContext),
+	//server.WrapHandler(wrapper.Logger),
+	//server.WrapHandler(wrapper.JWT),
+	//)
+
+	//service.Init()
 	pb.RegisterUserServiceHandler(service.Server(), user.NewUserGrpcController())
 	if err := service.Run(); err != nil {
 		panic(err)

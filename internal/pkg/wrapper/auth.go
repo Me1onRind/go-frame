@@ -10,8 +10,7 @@ import (
 func JWT(fn server.HandlerFunc) server.HandlerFunc {
 	return func(ctx context.Context, req server.Request, resp interface{}) error {
 		token := getJWTToken(ctx)
-
-		newCtx := ctx.(*newContext.CommonContext)
+		newCtx := newContext.GetCommonContext(ctx)
 		if err := auth.JWTAuth(newCtx, token); err != nil {
 			return err.ToRpcError()
 		}

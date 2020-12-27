@@ -1,10 +1,11 @@
 package errcode
 
 import (
+	//"encoding/json"
+	//"context"
 	"fmt"
-	"go-frame/proto/pb"
+	"github.com/micro/go-micro/v2/errors"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type Error struct {
@@ -59,7 +60,15 @@ func toGrpcCode(code int) codes.Code {
 }
 
 func (e *Error) ToRpcError() error {
-	grpcCode := toGrpcCode(e.Code)
-	s, _ := status.New(grpcCode, e.Msg).WithDetails(&pb.Error{Errcode: int32(e.Code), Message: e.Msg})
-	return s.Err()
+	return errors.New("go-frame", e.Msg, int32(e.Code))
+}
+
+func FromRpcError(err error) *Error {
+	if e, ok := err.(*errors.Error); ok {
+		return &Error{
+			Code: int(e.Code),
+			Msg:  e.Detail,
+		}
+	}
+	return RemoteServerError
 }

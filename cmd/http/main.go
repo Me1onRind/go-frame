@@ -27,6 +27,7 @@ func init() {
 	if err := initialize.SetupCookie(); err != nil {
 		panic(err)
 	}
+	initialize.InitGrpcClient()
 }
 
 func SetupHttpSetting() error {
@@ -41,6 +42,7 @@ func SetupHttpSetting() error {
 		"Logger.Info":  &global.InfoLoggerSetting,
 		"Logger.Error": &global.ErrorLoggerSetting,
 		"JWT":          &global.JWTSetting,
+		"Etcd":         &global.EtcdSetting,
 	}
 
 	for k, v := range LoadSections {

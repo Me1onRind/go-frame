@@ -42,7 +42,7 @@ func Logger() gin.HandlerFunc {
 			logger.KV("rawQuery", c.Request.URL.RawQuery),
 			logger.KV("request", string(request)),
 			logger.KV("clientIP", c.ClientIP()),
-		).Info("Request begin")
+		).Info("HTTP Request begin")
 
 		start := time.Now()
 		c.Next()
@@ -56,6 +56,6 @@ func Logger() gin.HandlerFunc {
 			logger.KV("clientIP", c.ClientIP()),
 			logger.KV("response", string(lw.buff.Bytes())),
 			logger.KV("cost", end.Sub(start)),
-		).Info("Request completed")
+		).Info("HTTP Request completed")
 	}
 }

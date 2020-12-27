@@ -7,13 +7,15 @@ import (
 	"go-frame/global"
 )
 
+const (
+	saveInContextKey = "commonCtx"
+)
+
 type HttpContext struct {
 	Raw interface{}
 
 	*contextS
 	*gin.Context
-
-	reqeustID string
 }
 
 func NewHttpContext(c *gin.Context) *HttpContext {
@@ -23,10 +25,6 @@ func NewHttpContext(c *gin.Context) *HttpContext {
 	}
 	h.contextS.reqeustID = c.GetString(global.ContextRequestIDKey)
 	return h
-}
-
-func (h *HttpContext) RequestID() string {
-	return h.reqeustID
 }
 
 type CommonContext struct {
@@ -47,6 +45,14 @@ func NewCommonContext(ctx context.Context, opts ...CommonCtxOption) *CommonConte
 	}
 
 	return c
+}
+
+func SetCommonContext(c context.Context, ctx *CommonContext) context.Context {
+	return context.WithValue(c, saveInContextKey, ctx)
+}
+
+func GetCommonContext(c context.Context) *CommonContext {
+	return c.Value(saveInContextKey).(*CommonContext)
 }
 
 func WithRequestID(reqeustID string) CommonCtxOption {

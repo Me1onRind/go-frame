@@ -10,11 +10,11 @@ import (
 
 func Logger(fn server.HandlerFunc) server.HandlerFunc {
 	return func(ctx context.Context, req server.Request, resp interface{}) error {
-		newCtx := ctx.(*newContext.CommonContext)
+		newCtx := newContext.GetCommonContext(ctx)
 		logger.WithTrace(newCtx).WithFields(
 			logger.KV("fullMethod", req.Method()),
 			logger.KV("req", req.Body()),
-		).Info("Request begin")
+		).Info("GRPC Request begin")
 
 		startTime := time.Now()
 		err := fn(ctx, req, resp)
@@ -24,8 +24,9 @@ func Logger(fn server.HandlerFunc) server.HandlerFunc {
 			logger.KV("fullMethod", req.Method()),
 			logger.KV("req", req.Body()),
 			logger.KV("resp", resp),
+			logger.KV("error", err),
 			logger.KV("cost", end.Sub(startTime)),
-		).Info("Request completed")
+		).Info("GRPC Request completed")
 		return err
 	}
 }
