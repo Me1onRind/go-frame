@@ -3,7 +3,6 @@ package middleware
 import (
 	"bytes"
 	"github.com/gin-gonic/gin"
-	"go-frame/internal/pkg/logger"
 	"go-frame/internal/utils/ctx_helper"
 	"go.uber.org/zap"
 	"io/ioutil"
