@@ -19,7 +19,7 @@ func NewUserDao() *UserDao {
 
 func (u *UserDao) GetUserByUserID(ctx context.Context, userID uint64) (*User, *errcode.Error) {
 	var user User
-	err := ctx.ReadDB(u.dbKey).Where("user_id=?", userID).Take(&user).Error
+	err := ctx.ReadDB(u.dbKey).WithContext(ctx).Where("user_id=?", userID).Take(&user).Error
 	if err == gorm.ErrRecordNotFound {
 		return nil, errcode.RecordNotFound
 	}

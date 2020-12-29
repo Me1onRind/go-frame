@@ -6,7 +6,6 @@ import (
 	customContext "go-frame/internal/pkg/context"
 	"go-frame/internal/pkg/logger"
 	"go-frame/internal/utils/ctx_helper"
-	//"go.opentelemetry.io/oteltest"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
 )
@@ -38,6 +37,8 @@ func Tracing(fn server.HandlerFunc) server.HandlerFunc {
 		commonCtx := customContext.NewCommonContext(c, customContext.WithTracer(tracer), customContext.WithSpan(span))
 		c = ctx_helper.SetCommonContext(c, commonCtx)
 
-		return fn(c, req, resp)
+		err := fn(c, req, resp)
+
+		return err
 	}
 }

@@ -1,12 +1,20 @@
 package store
 
 import (
+	ct "context"
 	"fmt"
+	"go-frame/internal/pkg/context"
 	"go-frame/internal/pkg/setting"
 	"go-frame/internal/utils/date"
+	"go.opentelemetry.io/otel/label"
+	"go.opentelemetry.io/otel/trace"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+)
+
+const (
+	spanKey = "span"
 )
 
 func NewDBEngine(dbSetting *setting.DBSettingS) (*gorm.DB, error) {
@@ -31,8 +39,9 @@ func NewDBEngine(dbSetting *setting.DBSettingS) (*gorm.DB, error) {
 	sqlDB.SetMaxOpenConns(dbSetting.MaxOpenConns)
 	sqlDB.SetConnMaxLifetime(dbSetting.ConnectMaxLifeTime)
 
+	db.Callback().Query().Before("*").Register("my_plugin:tracing_start", tracingStart())
+	db.Callback().Query().After("*").Register("my_plugin:tracing_end", tracingEnd("SELECT"))
 	db.Callback().Create().Before("*").Register("my_plugin:create_ctime_mtime", createCTimeAndMTime)
-
 	db.Callback().Update().Before("*").Register("my_plugin:update_mtime", updateMTime)
 
 	return db, nil
@@ -46,4 +55,32 @@ func createCTimeAndMTime(db *gorm.DB) {
 	now := date.UnixTime()
 	db.Statement.SetColumn("ctime", now)
 	db.Statement.SetColumn("mtime", now)
+}
+
+func tracingStart() func(*gorm.DB) {
+	return func(db *gorm.DB) {
+		if db.Statement.Context != nil {
+			if ctx, ok := db.Statement.Context.(context.Context); ok {
+				parentCtx := trace.ContextWithSpan(ct.Background(), ctx.Span())
+				_, span := ctx.Span().Tracer().Start(parentCtx, "sql")
+				db.Set(spanKey, span)
+			}
+		}
+	}
+}
+
+func tracingEnd(operation string) func(*gorm.DB) {
+	return func(db *gorm.DB) {
+		if sp, ok := db.Get(spanKey); ok {
+			span := sp.(trace.Span)
+			defer span.End()
+
+			span.SetAttributes(
+				label.String("db.table", db.Statement.Table),
+				label.String("db.method", operation),
+				label.Int64("db.rowAffected", db.RowsAffected),
+				label.Bool("db.err", db.Error != nil),
+			)
+		}
+	}
 }
