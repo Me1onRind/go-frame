@@ -48,7 +48,7 @@ require (
 	github.com/micro/go-micro v1.18.0
 	github.com/micro/go-micro/v2 v2.9.1
 	github.com/micro/go-plugins/registry/etcdv3/v2 v2.9.1
-	github.com/micro/go-plugins/wrapper/trace/opentracing v0.0.0-20200119172437-4fe21aa238fd
+	github.com/micro/go-plugins/wrapper/trace/opentracing v0.0.0-20200119172437-4fe21aa238fd // indirect
 	github.com/miekg/dns v1.1.27 // indirect
 	github.com/mitchellh/hashstructure v1.0.0 // indirect
 	github.com/nats-io/nats.go v1.9.2 // indirect
@@ -72,7 +72,7 @@ require (
 	go.opentelemetry.io/otel v0.15.0
 	go.opentelemetry.io/otel/exporters/trace/jaeger v0.15.0
 	go.opentelemetry.io/otel/sdk v0.15.0
-	go.uber.org/zap v1.13.0 // indirect
+	go.uber.org/zap v1.16.0
 	golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899 // indirect
 	google.golang.org/grpc v1.34.0-dev
 	google.golang.org/grpc/examples v0.0.0-20201222210138-66c1393796be // indirect

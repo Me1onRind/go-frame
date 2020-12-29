@@ -3,11 +3,12 @@ package wrapper
 import (
 	"context"
 	"github.com/micro/go-micro/v2/server"
+	"go-frame/global"
 	customContext "go-frame/internal/pkg/context"
-	"go-frame/internal/pkg/logger"
 	"go-frame/internal/utils/ctx_helper"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
+	"go.uber.org/zap"
 )
 
 func Tracing(fn server.HandlerFunc) server.HandlerFunc {
@@ -29,12 +30,15 @@ func Tracing(fn server.HandlerFunc) server.HandlerFunc {
 		spanID = spanCtx.SpanID.String()
 		traceID = spanCtx.TraceID.String()
 
-		var tracer logger.Tracer = logger.NewSimpleTracer(
-			logger.KV("traceID", traceID),
-			logger.KV("spanID", spanID),
+		commonCtx := customContext.NewCommonContext(c,
+			customContext.WithSpan(span),
+			customContext.WithZapLogger(
+				global.Logger.With(
+					zap.String("traceID", traceID),
+					zap.String("spanID", spanID),
+				),
+			),
 		)
-
-		commonCtx := customContext.NewCommonContext(c, customContext.WithTracer(tracer), customContext.WithSpan(span))
 		c = ctx_helper.SetCommonContext(c, commonCtx)
 
 		err := fn(c, req, resp)

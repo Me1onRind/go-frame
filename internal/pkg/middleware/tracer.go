@@ -2,10 +2,11 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
+	"go-frame/global"
 	customContext "go-frame/internal/pkg/context"
-	"go-frame/internal/pkg/logger"
 	"go-frame/internal/utils/ctx_helper"
 	"go.opentelemetry.io/otel"
+	"go.uber.org/zap"
 	//"go.opentelemetry.io/otel/trace"
 	"context"
 )
@@ -20,12 +21,15 @@ func Tracing() gin.HandlerFunc {
 		traceID := span.SpanContext().TraceID.String()
 		spanID := span.SpanContext().SpanID.String()
 
-		var tracer logger.Tracer = logger.NewSimpleTracer(
-			logger.KV("traceID", traceID),
-			logger.KV("spanID", spanID),
+		httpContext := customContext.NewHttpContext(c,
+			customContext.WithSpan(span),
+			customContext.WithZapLogger(
+				global.Logger.With(
+					zap.String("traceID", traceID),
+					zap.String("spanID", spanID),
+				),
+			),
 		)
-
-		httpContext := customContext.NewHttpContext(c, customContext.WithTracer(tracer), customContext.WithSpan(span))
 		ctx_helper.SetHttpContext(c, httpContext)
 
 		c.Next()

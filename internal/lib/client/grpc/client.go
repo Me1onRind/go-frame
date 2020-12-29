@@ -9,8 +9,8 @@ import (
 	"github.com/micro/go-plugins/registry/etcdv3/v2"
 	"go-frame/global"
 	customContext "go-frame/internal/pkg/context"
-	"go-frame/internal/pkg/logger"
 	"go-frame/internal/utils/ctx_helper"
+	"go.uber.org/zap"
 	"time"
 )
 
@@ -49,13 +49,14 @@ func callLogger(fn client.CallFunc) client.CallFunc {
 		begin := time.Now()
 		err := fn(ctx, node, req, rsp, opts)
 
-		logger.WithTrace(c).WithFields(
-			logger.KV("method", req.Method()),
-			logger.JSONKV("reqParam", req.Body()),
-			logger.KV("target", node.Address),
-			logger.KV("resp", rsp),
-			logger.KV("cost", time.Since(begin)),
-		).Info("Grpc Request Complete")
+		c.Logger().Info("GRPC Call End",
+			zap.String("method", req.Method()),
+			zap.Any("reqBody", req.Body()),
+			zap.String("target", node.Address),
+			zap.Any("resp", rsp),
+			zap.Error(err),
+			zap.Duration("cost", time.Since(begin)),
+		)
 
 		return err
 	}

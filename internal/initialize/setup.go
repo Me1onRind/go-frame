@@ -5,12 +5,13 @@ import (
 	"github.com/Me1onRind/logrotate"
 	"github.com/gorilla/sessions"
 	"go-frame/global"
-	"go-frame/internal/pkg/logger"
 	"go-frame/internal/pkg/setting"
 	"go-frame/internal/pkg/store"
-	"io"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 func SetupStore() error {
@@ -29,31 +30,6 @@ func SetupStore() error {
 	return nil
 }
 
-func SetupLogger() error {
-	infoWriter, err := initLogWriter(global.InfoLoggerSetting)
-	if err != nil {
-		return err
-	}
-	errorWriter, err := initLogWriter(global.ErrorLoggerSetting)
-	if err != nil {
-		return err
-	}
-
-	loggerConfig := &logger.Config{
-		NewWriter: func(level logger.Level) io.Writer {
-			if level <= logger.LevelInfo {
-				return infoWriter
-			}
-			return errorWriter
-		},
-		TimeFormat: logger.DefaultTimeFormat,
-		Level:      logger.LevelInfo,
-		Separate:   '|',
-	}
-	logger.SetLogger(logger.NewLogger(loggerConfig))
-	return nil
-}
-
 func SetupCookie() error {
 	cookiesSetting := global.HttpServerSetting.Cookies
 	if cookiesSetting.StoreType == "CookieStore" {
@@ -61,6 +37,45 @@ func SetupCookie() error {
 	} else {
 		return fmt.Errorf("Unsupport storeType:%s", cookiesSetting.StoreType)
 	}
+	return nil
+}
+
+func SetupZapLogger() error {
+	encoder := zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
+		MessageKey:  "msg",
+		LevelKey:    "level",
+		EncodeLevel: zapcore.CapitalLevelEncoder,
+		TimeKey:     "ts",
+		EncodeTime: func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
+			enc.AppendString(t.Format("2006-01-02 15:04:05"))
+		},
+		CallerKey:    "file",
+		EncodeCaller: zapcore.ShortCallerEncoder,
+	})
+
+	infoLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl < zapcore.WarnLevel
+	})
+	warnLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl >= zapcore.WarnLevel
+	})
+
+	infoWriter, err := initLogWriter(global.InfoLoggerSetting)
+	if err != nil {
+		return err
+	}
+	warnWriter, err := initLogWriter(global.ErrorLoggerSetting)
+	if err != nil {
+		return err
+	}
+
+	core := zapcore.NewTee(
+		zapcore.NewCore(encoder, zapcore.AddSync(infoWriter), infoLevel),
+		zapcore.NewCore(encoder, zapcore.AddSync(warnWriter), warnLevel),
+	)
+
+	global.Logger = zap.New(core, zap.AddCaller())
+
 	return nil
 }
 

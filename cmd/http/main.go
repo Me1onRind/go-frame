@@ -15,10 +15,10 @@ func init() {
 	if err := SetupHttpSetting(); err != nil {
 		panic(err)
 	}
-	if err := initialize.SetupStore(); err != nil {
+	if err := initialize.SetupZapLogger(); err != nil {
 		panic(err)
 	}
-	if err := initialize.SetupLogger(); err != nil {
+	if err := initialize.SetupStore(); err != nil {
 		panic(err)
 	}
 	if err := validation.RegisterGinValidation(); err != nil {

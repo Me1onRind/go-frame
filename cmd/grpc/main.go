@@ -23,10 +23,10 @@ func init() {
 	if err := SetGrpcSetting(); err != nil {
 		panic(err)
 	}
-	if err := initialize.SetupStore(); err != nil {
+	if err := initialize.SetupZapLogger(); err != nil {
 		panic(err)
 	}
-	if err := initialize.SetupLogger(); err != nil {
+	if err := initialize.SetupStore(); err != nil {
 		panic(err)
 	}
 	if err := initialize.SetupJaegerTracer("go-frame-grpc"); err != nil {

@@ -3,8 +3,8 @@ package context
 import (
 	"context"
 	"github.com/gin-gonic/gin"
-	"go-frame/internal/pkg/logger"
 	"go.opentelemetry.io/otel/trace"
+	"go.uber.org/zap"
 )
 
 type HttpContext struct {
@@ -53,8 +53,8 @@ func WithSpan(span trace.Span) Option {
 	}
 }
 
-func WithTracer(tracer logger.Tracer) Option {
+func WithZapLogger(lg *zap.Logger) Option {
 	return func(ctx *contextS) {
-		ctx.Tracer = tracer
+		ctx.logger = lg
 	}
 }

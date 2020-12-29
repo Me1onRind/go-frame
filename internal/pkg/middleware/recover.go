@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"go-frame/internal/pkg/errcode"
 	"go-frame/internal/pkg/gateway"
-	"go-frame/internal/pkg/logger"
 	"go-frame/internal/utils/ctx_helper"
 	"runtime/debug"
 )
@@ -14,7 +13,7 @@ func Recover() gin.HandlerFunc {
 		defer func() {
 			if err := recover(); err != nil {
 				ctx := ctx_helper.GetHttpContext(c)
-				logger.WithTrace(ctx).Errorf("Panic recover err:%v, stack:\n%s", err, debug.Stack())
+				ctx.Logger().Sugar().Errorf("Panic recover err:%v, stack:\n%s", err, debug.Stack())
 				c.JSON(200, gateway.NewResponse(errcode.ServerError, nil))
 				c.Abort()
 			}

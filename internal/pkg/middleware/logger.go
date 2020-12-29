@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go-frame/internal/pkg/logger"
 	"go-frame/internal/utils/ctx_helper"
+	"go.uber.org/zap"
 	"io/ioutil"
 	"time"
 )
@@ -24,7 +25,7 @@ func AccessLogger() gin.HandlerFunc {
 		ctx := ctx_helper.GetHttpContext(c)
 		request, err := c.GetRawData()
 		if err != nil {
-			logger.Errorf("Get request body error:%v", err)
+			ctx.Logger().Error("Get request body error", zap.Error(err))
 		}
 		c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(request))
 
@@ -34,26 +35,26 @@ func AccessLogger() gin.HandlerFunc {
 		}
 		c.Writer = lw
 
-		logger.WithTrace(ctx).WithFields(
-			logger.KV("method", c.Request.Method),
-			logger.KV("URI", c.Request.URL.Path),
-			logger.KV("rawQuery", c.Request.URL.RawQuery),
-			logger.KV("request", string(request)),
-			logger.KV("clientIP", c.ClientIP()),
-		).Info("HTTP Request Start")
+		ctx.Logger().Info("HTTP Request Start",
+			zap.String("method", c.Request.Method),
+			zap.String("PATH", c.Request.URL.Path),
+			zap.String("rawQuery", c.Request.URL.RawQuery),
+			zap.String("reqBody", string(request)),
+			zap.String("clientIP", c.ClientIP()),
+		)
 
 		start := time.Now()
 		c.Next()
 		end := time.Now()
 
-		logger.WithTrace(ctx).WithFields(
-			logger.KV("method", c.Request.Method),
-			logger.KV("URI", c.Request.URL.Path),
-			logger.KV("rawQuery", c.Request.URL.RawQuery),
-			logger.KV("request", string(request)),
-			logger.KV("clientIP", c.ClientIP()),
-			logger.KV("response", string(lw.buff.Bytes())),
-			logger.KV("cost", end.Sub(start)),
-		).Info("HTTP Request End")
+		ctx.Logger().Info("HTTP Request End",
+			zap.String("method", c.Request.Method),
+			zap.String("PATH", c.Request.URL.Path),
+			zap.String("rawQuery", c.Request.URL.RawQuery),
+			zap.String("reqBody", string(request)),
+			zap.String("clientIP", c.ClientIP()),
+			zap.String("resp", string(lw.buff.Bytes())),
+			zap.Duration("cost", end.Sub(start)),
+		)
 	}
 }

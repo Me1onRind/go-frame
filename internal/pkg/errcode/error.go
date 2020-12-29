@@ -1,8 +1,6 @@
 package errcode
 
 import (
-	//"encoding/json"
-	//"context"
 	"fmt"
 	"github.com/micro/go-micro/v2/errors"
 	"google.golang.org/grpc/codes"
@@ -65,6 +63,9 @@ func (e *Error) ToRpcError() error {
 
 func FromRpcError(err error) *Error {
 	if e, ok := err.(*errors.Error); ok {
+		if e.Code == 500 {
+			return RemoteServerError.WithInfo(e.Detail)
+		}
 		return &Error{
 			Code: int(e.Code),
 			Msg:  e.Detail,
