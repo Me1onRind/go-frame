@@ -1,39 +1,23 @@
 package initialize
 
 import (
-	"github.com/jaegertracing/jaeger-client-go/config"
-	opentracing "github.com/opentracing/opentracing-go"
 	"go-frame/global"
+	"go.opentelemetry.io/otel/exporters/trace/jaeger"
+	"go.opentelemetry.io/otel/label"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 )
 
-func SetupOpentracingTracer() error {
+func SetupJaegerTracer(serviceName string) error {
 	var err error
-	global.Tracer, err = newJaegerTracer("go-frame", "")
-	if err != nil {
-		return err
-	}
-	opentracing.SetGlobalTracer(global.Tracer)
-	return nil
-}
-
-func newJaegerTracer(serviceName, agentHostPort string) (opentracing.Tracer, error) {
-	cfg := &config.Configuration{
-		ServiceName: serviceName,
-		Disabled:    false,
-		Tags:        []opentracing.Tag{},
-		Sampler: &config.SamplerConfig{
-			Type:  "const",
-			Param: 1,
-		},
-		Reporter: &config.ReporterConfig{
-			LogSpans:           false,
-			LocalAgentHostPort: agentHostPort,
-		},
-	}
-
-	tracer, _, err := cfg.NewTracer()
-	if err != nil {
-		return nil, err
-	}
-	return tracer, nil
+	global.JaegerPipelineFlush, err = jaeger.InstallNewPipeline(
+		jaeger.WithCollectorEndpoint("http://localhost:14268/api/traces"),
+		jaeger.WithProcess(jaeger.Process{
+			ServiceName: serviceName,
+			Tags: []label.KeyValue{
+				label.String("exporter", "jaeger"),
+			},
+		}),
+		jaeger.WithSDK(&sdktrace.Config{DefaultSampler: sdktrace.AlwaysSample()}),
+	)
+	return err
 }

@@ -42,14 +42,13 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.1.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.9.5 // indirect
 	github.com/hashicorp/go-version v1.2.1 // indirect
-	github.com/jaegertracing/jaeger-client-go v2.25.0+incompatible
-	github.com/kr/pretty v0.2.0 // indirect
 	github.com/lib/pq v1.3.0 // indirect
 	github.com/lucas-clemente/quic-go v0.14.1 // indirect
 	github.com/micro/cli/v2 v2.1.2 // indirect
 	github.com/micro/go-micro v1.18.0
 	github.com/micro/go-micro/v2 v2.9.1
 	github.com/micro/go-plugins/registry/etcdv3/v2 v2.9.1
+	github.com/micro/go-plugins/wrapper/trace/opentracing v0.0.0-20200119172437-4fe21aa238fd
 	github.com/miekg/dns v1.1.27 // indirect
 	github.com/mitchellh/hashstructure v1.0.0 // indirect
 	github.com/nats-io/nats.go v1.9.2 // indirect
@@ -58,10 +57,9 @@ require (
 	github.com/olekukonko/tablewriter v0.0.4 // indirect
 	github.com/onsi/ginkgo v1.8.0 // indirect
 	github.com/onsi/gomega v1.5.0 // indirect
-	github.com/opentracing/opentracing-go v1.1.0
 	github.com/oxtoacart/bpool v0.0.0-20190530202638-03653db5a59c // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
-	github.com/satori/go.uuid v1.2.0
+	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/serenize/snaker v0.0.0-20171204205717-a683aaf2d516 // indirect
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.6.1
@@ -69,15 +67,13 @@ require (
 	github.com/technoweenie/multipartstreamer v1.0.1 // indirect
 	github.com/teris-io/shortid v0.0.0-20171029131806-771a37caa5cf // indirect
 	github.com/tmc/grpc-websocket-proxy v0.0.0-20200122045848-3419fae592fc // indirect
-	github.com/uber/jaeger-client-go v2.24.0+incompatible // indirect
-	github.com/uber/jaeger-lib v2.4.0+incompatible // indirect
 	github.com/xlab/treeprint v0.0.0-20181112141820-a009c3971eca // indirect
 	go.etcd.io/bbolt v1.3.4 // indirect
+	go.opentelemetry.io/otel v0.15.0
+	go.opentelemetry.io/otel/exporters/trace/jaeger v0.15.0
+	go.opentelemetry.io/otel/sdk v0.15.0
 	go.uber.org/zap v1.13.0 // indirect
 	golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899 // indirect
-	golang.org/x/net v0.0.0-20200520182314-0ba52f642ac2 // indirect
-	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d // indirect
-	golang.org/x/sys v0.0.0-20200523222454-059865788121 // indirect
 	google.golang.org/grpc v1.34.0-dev
 	google.golang.org/grpc/examples v0.0.0-20201222210138-66c1393796be // indirect
 	gopkg.in/square/go-jose.v2 v2.4.1 // indirect
@@ -88,6 +84,7 @@ require (
 )
 
 replace (
-	github.com/uber/jaeger-client-go => github.com/jaegertracing/jaeger-client-go v2.25.0+incompatible
+	google.golang.org/api => github.com/googleapis/google-api-go-client v0.32.0
+	google.golang.org/genproto => github.com/googleapis/go-genproto v0.0.0-20200904004341-0bd0a958aa1d
 	google.golang.org/grpc => google.golang.org/grpc v1.26.0
 )

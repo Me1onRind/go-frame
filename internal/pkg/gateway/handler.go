@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go-frame/internal/pkg/context"
 	"go-frame/internal/pkg/errcode"
+	"go-frame/internal/utils/ctx_helper"
 	"reflect"
 )
 
@@ -11,7 +12,7 @@ type Handler func(c *context.HttpContext) (data interface{}, err *errcode.Error)
 
 func Json(handler Handler, paramType interface{}) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		httpContext := context.NewHttpContext(c)
+		httpContext := ctx_helper.GetHttpContext(c)
 		if paramType != nil {
 			requestParams := parserProtocol(paramType)
 			if err := c.ShouldBind(requestParams); err != nil {

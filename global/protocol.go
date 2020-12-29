@@ -1,7 +1,7 @@
 package global
 
 const (
-	ContextRequestIDKey  = "RequestID"
-	ProtocolRequestIDKey = "X-Request-Id"
-	ProtocolJWTTokenKey  = "Jwt-Token"
+	ProtocolJWTTokenKey = "Jwt-Token"
+	ProtocolSpanIDKey   = "Span-Id"
+	ProtocolTraceIDKey  = "Trace-Id"
 )

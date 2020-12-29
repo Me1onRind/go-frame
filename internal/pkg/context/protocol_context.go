@@ -3,12 +3,8 @@ package context
 import (
 	"context"
 	"github.com/gin-gonic/gin"
-	uuid "github.com/satori/go.uuid"
-	"go-frame/global"
-)
-
-const (
-	saveInContextKey = "commonCtx"
+	"go-frame/internal/pkg/logger"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type HttpContext struct {
@@ -18,12 +14,16 @@ type HttpContext struct {
 	*gin.Context
 }
 
-func NewHttpContext(c *gin.Context) *HttpContext {
+func NewHttpContext(c *gin.Context, opts ...Option) *HttpContext {
 	h := &HttpContext{
 		contextS: newContextS(),
 		Context:  c,
 	}
-	h.contextS.reqeustID = c.GetString(global.ContextRequestIDKey)
+
+	for _, opt := range opts {
+		opt(h.contextS)
+	}
+
 	return h
 }
 
@@ -32,37 +32,29 @@ type CommonContext struct {
 	context.Context
 }
 
-type CommonCtxOption func(ctx *CommonContext)
-
-func NewCommonContext(ctx context.Context, opts ...CommonCtxOption) *CommonContext {
+func NewCommonContext(ctx context.Context, opts ...Option) *CommonContext {
 	c := &CommonContext{
 		contextS: newContextS(),
 		Context:  ctx,
 	}
 
 	for _, opt := range opts {
-		opt(c)
+		opt(c.contextS)
 	}
 
 	return c
 }
 
-func SetCommonContext(c context.Context, ctx *CommonContext) context.Context {
-	return context.WithValue(c, saveInContextKey, ctx)
-}
+type Option func(ctx *contextS)
 
-func GetCommonContext(c context.Context) *CommonContext {
-	return c.Value(saveInContextKey).(*CommonContext)
-}
-
-func WithRequestID(reqeustID string) CommonCtxOption {
-	return func(ctx *CommonContext) {
-		ctx.contextS.reqeustID = reqeustID
+func WithSpan(span trace.Span) Option {
+	return func(ctx *contextS) {
+		ctx.span = span
 	}
 }
 
-func WithAutoRequestID() CommonCtxOption {
-	return func(ctx *CommonContext) {
-		ctx.contextS.reqeustID = uuid.NewV4().String()
+func WithTracer(tracer logger.Tracer) Option {
+	return func(ctx *contextS) {
+		ctx.Tracer = tracer
 	}
 }

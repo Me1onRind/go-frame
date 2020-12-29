@@ -3,8 +3,8 @@ package middleware
 import (
 	"bytes"
 	"github.com/gin-gonic/gin"
-	"go-frame/global"
 	"go-frame/internal/pkg/logger"
+	"go-frame/internal/utils/ctx_helper"
 	"io/ioutil"
 	"time"
 )
@@ -19,11 +19,9 @@ func (w *logWriter) Write(b []byte) (int, error) {
 	return w.ResponseWriter.Write(b)
 }
 
-func Logger() gin.HandlerFunc {
+func AccessLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		xRequestID := getRequestID(c)
-		c.Set(global.ContextRequestIDKey, xRequestID)
-
+		ctx := ctx_helper.GetHttpContext(c)
 		request, err := c.GetRawData()
 		if err != nil {
 			logger.Errorf("Get request body error:%v", err)
@@ -36,19 +34,19 @@ func Logger() gin.HandlerFunc {
 		}
 		c.Writer = lw
 
-		logger.WithTrace(getTracer(c)).WithFields(
+		logger.WithTrace(ctx).WithFields(
 			logger.KV("method", c.Request.Method),
 			logger.KV("URI", c.Request.URL.Path),
 			logger.KV("rawQuery", c.Request.URL.RawQuery),
 			logger.KV("request", string(request)),
 			logger.KV("clientIP", c.ClientIP()),
-		).Info("HTTP Request begin")
+		).Info("HTTP Request Start")
 
 		start := time.Now()
 		c.Next()
 		end := time.Now()
 
-		logger.WithTrace(getTracer(c)).WithFields(
+		logger.WithTrace(ctx).WithFields(
 			logger.KV("method", c.Request.Method),
 			logger.KV("URI", c.Request.URL.Path),
 			logger.KV("rawQuery", c.Request.URL.RawQuery),
@@ -56,6 +54,6 @@ func Logger() gin.HandlerFunc {
 			logger.KV("clientIP", c.ClientIP()),
 			logger.KV("response", string(lw.buff.Bytes())),
 			logger.KV("cost", end.Sub(start)),
-		).Info("HTTP Request completed")
+		).Info("HTTP Request End")
 	}
 }

@@ -7,6 +7,7 @@ import (
 	"go-frame/internal/lib/session"
 	"go-frame/internal/pkg/errcode"
 	"go-frame/internal/pkg/gateway"
+	"go-frame/internal/utils/ctx_helper"
 )
 
 func Login() gin.HandlerFunc {
@@ -25,7 +26,8 @@ func Login() gin.HandlerFunc {
 func Jwt() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.GetHeader(global.ProtocolJWTTokenKey)
-		if err := auth.JWTAuth(getTracer(c), token); err != nil {
+		ctx := ctx_helper.GetHttpContext(c)
+		if err := auth.JWTAuth(ctx, token); err != nil {
 			c.JSON(200, gateway.NewResponse(err, nil))
 			c.Abort()
 		}

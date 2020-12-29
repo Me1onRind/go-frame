@@ -5,11 +5,11 @@ type Tracer interface {
 }
 
 type SimpleTracer struct {
-	ReqID    string
+	string
 	prefixKV []*Field
 }
 
-func NewSimpleTracer(fields ...*Field) *SimpleTracer {
+func NewSimpleTracer(fields ...*Field) Tracer {
 	return &SimpleTracer{
 		prefixKV: fields,
 	}

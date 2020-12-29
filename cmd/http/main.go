@@ -27,6 +27,9 @@ func init() {
 	if err := initialize.SetupCookie(); err != nil {
 		panic(err)
 	}
+	if err := initialize.SetupJaegerTracer("go-frame-api"); err != nil {
+		panic(err)
+	}
 	initialize.InitGrpcClient()
 }
 

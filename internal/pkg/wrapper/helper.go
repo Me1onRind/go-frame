@@ -2,22 +2,45 @@ package wrapper
 
 import (
 	"context"
-	"fmt"
+	"encoding/hex"
 	"github.com/micro/go-micro/v2/metadata"
-	uuid "github.com/satori/go.uuid"
 	"go-frame/global"
+	"go.opentelemetry.io/otel/trace"
 )
-
-func getRequestID(ctx context.Context) string {
-	fmt.Println(metadata.FromContext(ctx))
-	requestID, _ := metadata.Get(ctx, global.ProtocolRequestIDKey)
-	if len(requestID) == 0 {
-		requestID = uuid.NewV4().String()
-	}
-	return requestID
-}
 
 func getJWTToken(ctx context.Context) string {
 	jwtToken, _ := metadata.Get(ctx, global.ProtocolJWTTokenKey)
 	return jwtToken
+}
+
+func getSpanCtx(ctx context.Context) *trace.SpanContext {
+	spanID, _ := metadata.Get(ctx, global.ProtocolSpanIDKey)
+	traceID, _ := metadata.Get(ctx, global.ProtocolTraceIDKey)
+
+	if len(traceID) > 0 && len(spanID) > 0 {
+		return &trace.SpanContext{
+			TraceID: stringToTraceID(traceID),
+			SpanID:  stringToSpanID(spanID),
+		}
+	}
+
+	return nil
+}
+
+func stringToTraceID(str string) trace.TraceID {
+	data, _ := hex.DecodeString(str)
+	var b [16]byte = [16]byte{}
+	for k, v := range data[:16] {
+		b[k] = v
+	}
+	return b
+}
+
+func stringToSpanID(str string) trace.SpanID {
+	data, _ := hex.DecodeString(str)
+	var b [8]byte = [8]byte{}
+	for k, v := range data[:8] {
+		b[k] = v
+	}
+	return b
 }

@@ -2,40 +2,61 @@ package grpc
 
 import (
 	"context"
-	micro "github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/client"
+	cli "github.com/micro/go-micro/v2/client/grpc"
 	"github.com/micro/go-micro/v2/metadata"
 	"github.com/micro/go-micro/v2/registry"
 	"github.com/micro/go-plugins/registry/etcdv3/v2"
 	"go-frame/global"
 	customContext "go-frame/internal/pkg/context"
-	"go-frame/proto/pb"
+	"go-frame/internal/pkg/logger"
+	"go-frame/internal/utils/ctx_helper"
 	"time"
 )
 
 var (
-	GoFrameClient pb.UserService
+	GoFrameClient client.Client
 )
 
 func InitClients() {
-	GoFrameClient = pb.NewUserService("go-frame-grpc", initServiceClient("go-frame-grpc.client"))
+	GoFrameClient = newGoFrameClient()
 }
 
-func JwtContext(ctx customContext.Context, jwtToken string) context.Context {
-	return metadata.NewContext(context.Background(), map[string]string{
-		global.ProtocolRequestIDKey: ctx.RequestID(),
-		global.ProtocolJWTTokenKey:  jwtToken,
+func JWTContext(ctx customContext.Context, jwtToken string) context.Context {
+	newCtx := ctx_helper.SetCustomContext(context.Background(), ctx)
+	return metadata.NewContext(newCtx, map[string]string{
+		global.ProtocolJWTTokenKey: jwtToken,
+		global.ProtocolSpanIDKey:   ctx.Span().SpanContext().SpanID.String(),
+		global.ProtocolTraceIDKey:  ctx.Span().SpanContext().TraceID.String(),
 	})
 }
 
-func initServiceClient(microName string) client.Client {
-	service := micro.NewService(
-		micro.Name(microName),
-		micro.Registry(etcdv3.NewRegistry(
-			registry.Addrs(global.EtcdSetting.Addresses...),
-			registry.Timeout(5*time.Second),
-		)),
+func newGoFrameClient() client.Client {
+	return cli.NewClient(
+		client.Registry(
+			etcdv3.NewRegistry(
+				registry.Addrs(global.EtcdSetting.Addresses...),
+				registry.Timeout(5*time.Second),
+			),
+		),
+		client.WrapCall(callLogger),
 	)
-	service.Init()
-	return service.Client()
+}
+
+func callLogger(fn client.CallFunc) client.CallFunc {
+	return func(ctx context.Context, node *registry.Node, req client.Request, rsp interface{}, opts client.CallOptions) error {
+		c := ctx_helper.GetCustomContext(ctx)
+		begin := time.Now()
+		err := fn(ctx, node, req, rsp, opts)
+
+		logger.WithTrace(c).WithFields(
+			logger.KV("method", req.Method()),
+			logger.JSONKV("reqParam", req.Body()),
+			logger.KV("target", node.Address),
+			logger.KV("resp", rsp),
+			logger.KV("cost", time.Since(begin)),
+		).Info("Grpc Request Complete")
+
+		return err
+	}
 }

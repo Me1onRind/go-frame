@@ -1,26 +1,33 @@
 package middleware
 
 import (
-	"context"
 	"github.com/gin-gonic/gin"
-	opentracing "github.com/opentracing/opentracing-go"
-	"go-frame/global"
+	customContext "go-frame/internal/pkg/context"
+	"go-frame/internal/pkg/logger"
+	"go-frame/internal/utils/ctx_helper"
+	"go.opentelemetry.io/otel"
+	//"go.opentelemetry.io/otel/trace"
+	"context"
 )
 
 func Tracing() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var ctx context.Context
-		span := opentracing.SpanFromContext(c.Request.Context())
-		if span != nil {
-			span, ctx = opentracing.StartSpanFromContextWithTracer(c.Request.Context(), global.Tracer,
-				c.Request.URL.Path, opentracing.ChildOf(span.Context()))
-		} else {
-			span, ctx = opentracing.StartSpanFromContextWithTracer(c.Request.Context(), global.Tracer,
-				c.Request.URL.Path)
-		}
-		defer span.Finish()
 
-		c.Request = c.Request.WithContext(ctx)
+		tr := otel.Tracer("tracer")
+		_, span := tr.Start(context.Background(), c.Request.URL.Path)
+		defer span.End()
+
+		traceID := span.SpanContext().TraceID.String()
+		spanID := span.SpanContext().SpanID.String()
+
+		var tracer logger.Tracer = logger.NewSimpleTracer(
+			logger.KV("traceID", traceID),
+			logger.KV("spanID", spanID),
+		)
+
+		httpContext := customContext.NewHttpContext(c, customContext.WithTracer(tracer), customContext.WithSpan(span))
+		ctx_helper.SetHttpContext(c, httpContext)
+
 		c.Next()
 	}
 }

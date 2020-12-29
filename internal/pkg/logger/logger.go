@@ -76,7 +76,6 @@ func (l *Logger) WithFields(fs ...*Field) *Logger {
 }
 
 func (l *Logger) WithTrace(tracer Tracer) *Logger {
-	//return l.WithFields(KV("requestID", tracer.RequestID()))
 	return l.WithFields(tracer.PrefixFields()...)
 }
 

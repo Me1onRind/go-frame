@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"go-frame/global"
 	"go-frame/internal/pkg/errcode"
+	"go-frame/internal/pkg/logger"
+	"go.opentelemetry.io/otel/trace"
 	"gorm.io/gorm"
 )
 
@@ -12,18 +14,20 @@ type TranscationFunc func() *errcode.Error
 
 type Context interface {
 	context.Context
+	logger.Tracer
 
 	Env() string
-	RequestID() string
-
 	ReadDB(dbKey string) *gorm.DB
 	WriteDB(dbKey string) *gorm.DB
 	Transaction(dbKey string, fc TranscationFunc) *errcode.Error
+
+	Span() trace.Span
 }
 
 type contextS struct {
-	reqeustID string
-	txs       map[string]*gorm.DB
+	txs  map[string]*gorm.DB
+	span trace.Span
+	logger.Tracer
 }
 
 func newContextS() *contextS {
@@ -88,6 +92,6 @@ func (c *contextS) Transaction(dbKey string, fc TranscationFunc) (err *errcode.E
 	return err
 }
 
-func (c *contextS) RequestID() string {
-	return c.reqeustID
+func (c *contextS) Span() trace.Span {
+	return c.span
 }

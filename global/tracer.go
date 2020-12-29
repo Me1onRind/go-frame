@@ -1,9 +1,9 @@
 package global
 
 import (
-	opentracing "github.com/opentracing/opentracing-go"
+//"go.opentelemetry.io/otel/exporters/trace/jaeger"
 )
 
 var (
-	Tracer opentracing.Tracer
+	JaegerPipelineFlush func()
 )
