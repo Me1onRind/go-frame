@@ -1,10 +1,10 @@
 package user
 
 import (
+	"go-frame/internal/core/context"
+	"go-frame/internal/core/errcode"
 	"go-frame/internal/dao/user"
 	"go-frame/internal/lib/remote_service/user_service"
-	"go-frame/internal/pkg/context"
-	"go-frame/internal/pkg/errcode"
 	"go-frame/proto/pb"
 )
 

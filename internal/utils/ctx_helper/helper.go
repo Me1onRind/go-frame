@@ -3,8 +3,8 @@ package ctx_helper
 import (
 	"context"
 	"github.com/gin-gonic/gin"
-	customContext "go-frame/internal/pkg/context"
-	//"go-frame/internal/pkg/logger"
+	customContext "go-frame/internal/core/context"
+	//"go-frame/internal/core/logger"
 )
 
 const (

@@ -1,9 +1,9 @@
 package user
 
 import (
+	"go-frame/internal/core/context"
+	"go-frame/internal/core/errcode"
 	"go-frame/internal/lib/session"
-	"go-frame/internal/pkg/context"
-	"go-frame/internal/pkg/errcode"
 	"go-frame/internal/service/user"
 	"go-frame/protocol/user_proto"
 )

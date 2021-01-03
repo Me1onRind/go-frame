@@ -3,7 +3,7 @@ package routers
 import (
 	"github.com/gin-gonic/gin"
 	"go-frame/internal/controller/http/user"
-	"go-frame/internal/pkg/gateway"
+	"go-frame/internal/core/gateway"
 	"go-frame/protocol/user_proto"
 )
 

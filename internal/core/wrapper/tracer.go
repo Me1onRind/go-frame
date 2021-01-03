@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/micro/go-micro/v2/server"
 	"go-frame/global"
-	customContext "go-frame/internal/pkg/context"
+	customContext "go-frame/internal/core/context"
 	"go-frame/internal/utils/ctx_helper"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"

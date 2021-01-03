@@ -8,7 +8,7 @@ import (
 	"github.com/micro/go-micro/v2/registry"
 	"github.com/micro/go-plugins/registry/etcdv3/v2"
 	"go-frame/global"
-	customContext "go-frame/internal/pkg/context"
+	customContext "go-frame/internal/core/context"
 	"go-frame/internal/utils/ctx_helper"
 	"go.uber.org/zap"
 	"time"

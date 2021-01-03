@@ -5,8 +5,8 @@ import (
 	"go-frame/global"
 	"go-frame/internal/lib/auth"
 	"go-frame/internal/lib/session"
-	"go-frame/internal/pkg/errcode"
-	"go-frame/internal/pkg/gateway"
+	"go-frame/internal/core/errcode"
+	"go-frame/internal/core/gateway"
 	"go-frame/internal/utils/ctx_helper"
 )
 

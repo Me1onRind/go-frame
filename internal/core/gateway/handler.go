@@ -2,8 +2,8 @@ package gateway
 
 import (
 	"github.com/gin-gonic/gin"
-	"go-frame/internal/pkg/context"
-	"go-frame/internal/pkg/errcode"
+	"go-frame/internal/core/context"
+	"go-frame/internal/core/errcode"
 	"go-frame/internal/utils/ctx_helper"
 	"reflect"
 )

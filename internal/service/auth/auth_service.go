@@ -2,10 +2,10 @@ package auth
 
 import (
 	"go-frame/internal/constant/auth_constant"
+	"go-frame/internal/core/context"
+	"go-frame/internal/core/errcode"
 	authDao "go-frame/internal/dao/auth"
 	"go-frame/internal/lib/auth"
-	"go-frame/internal/pkg/context"
-	"go-frame/internal/pkg/errcode"
 	"time"
 )
 

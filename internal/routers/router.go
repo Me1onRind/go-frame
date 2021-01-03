@@ -2,7 +2,7 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
-	"go-frame/internal/pkg/middleware"
+	"go-frame/internal/core/middleware"
 )
 
 func NewRouter() *gin.Engine {

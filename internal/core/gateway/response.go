@@ -1,7 +1,7 @@
 package gateway
 
 import (
-	"go-frame/internal/pkg/errcode"
+	"go-frame/internal/core/errcode"
 )
 
 type Response struct {

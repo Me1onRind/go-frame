@@ -10,8 +10,8 @@ import (
 	"go-frame/global"
 	"go-frame/internal/controller/grpc/user"
 	"go-frame/internal/initialize"
-	"go-frame/internal/pkg/setting"
-	"go-frame/internal/pkg/wrapper"
+	"go-frame/internal/core/setting"
+	"go-frame/internal/core/wrapper"
 	"go-frame/proto/pb"
 	"os"
 	"os/signal"
@@ -23,7 +23,7 @@ func init() {
 	if err := SetGrpcSetting(); err != nil {
 		panic(err)
 	}
-	if err := initialize.SetupZapLogger(); err != nil {
+	if err := initialize.SetupLogger(); err != nil {
 		panic(err)
 	}
 	if err := initialize.SetupStore(); err != nil {

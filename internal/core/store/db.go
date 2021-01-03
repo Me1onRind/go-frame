@@ -3,8 +3,8 @@ package store
 import (
 	ct "context"
 	"fmt"
-	"go-frame/internal/pkg/context"
-	"go-frame/internal/pkg/setting"
+	"go-frame/internal/core/context"
+	"go-frame/internal/core/setting"
 	"go-frame/internal/utils/date"
 	"go.opentelemetry.io/otel/label"
 	"go.opentelemetry.io/otel/trace"

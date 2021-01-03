@@ -3,8 +3,8 @@ package auth
 import (
 	"github.com/dgrijalva/jwt-go"
 	"go-frame/global"
-	"go-frame/internal/pkg/context"
-	"go-frame/internal/pkg/errcode"
+	"go-frame/internal/core/context"
+	"go-frame/internal/core/errcode"
 	"go-frame/internal/utils/encode"
 	"go.uber.org/zap"
 	"time"

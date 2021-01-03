@@ -2,8 +2,8 @@ package auth
 
 import (
 	"go-frame/global"
-	"go-frame/internal/pkg/context"
-	"go-frame/internal/pkg/errcode"
+	"go-frame/internal/core/context"
+	"go-frame/internal/core/errcode"
 	"gorm.io/gorm"
 )
 

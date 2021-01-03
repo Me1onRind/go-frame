@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"go-frame/internal/pkg/errcode"
-	"go-frame/internal/pkg/gateway"
+	"go-frame/internal/core/errcode"
+	"go-frame/internal/core/gateway"
 	"go-frame/internal/utils/ctx_helper"
 	"runtime/debug"
 )

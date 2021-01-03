@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"go-frame/global"
-	"go-frame/internal/pkg/errcode"
+	"go-frame/internal/core/errcode"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 	"gorm.io/gorm"

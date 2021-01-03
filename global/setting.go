@@ -1,7 +1,7 @@
 package global
 
 import (
-	"go-frame/internal/pkg/setting"
+	"go-frame/internal/core/setting"
 )
 
 var (

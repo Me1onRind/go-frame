@@ -6,7 +6,7 @@ import (
 	"go-frame/global"
 	"go-frame/internal/initialize"
 	"go-frame/internal/initialize/validation"
-	"go-frame/internal/pkg/setting"
+	"go-frame/internal/core/setting"
 	"go-frame/internal/routers"
 )
 
@@ -15,7 +15,7 @@ func init() {
 	if err := SetupHttpSetting(); err != nil {
 		panic(err)
 	}
-	if err := initialize.SetupZapLogger(); err != nil {
+	if err := initialize.SetupLogger(); err != nil {
 		panic(err)
 	}
 	if err := initialize.SetupStore(); err != nil {

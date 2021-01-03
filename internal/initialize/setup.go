@@ -5,8 +5,8 @@ import (
 	"github.com/Me1onRind/logrotate"
 	"github.com/gorilla/sessions"
 	"go-frame/global"
-	"go-frame/internal/pkg/setting"
-	"go-frame/internal/pkg/store"
+	"go-frame/internal/core/setting"
+	"go-frame/internal/core/store"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"path/filepath"
@@ -40,7 +40,7 @@ func SetupCookie() error {
 	return nil
 }
 
-func SetupZapLogger() error {
+func SetupLogger() error {
 	encoder := zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
 		MessageKey:  "msg",
 		LevelKey:    "level",
@@ -49,8 +49,9 @@ func SetupZapLogger() error {
 		EncodeTime: func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
 			enc.AppendString(t.Format("2006-01-02 15:04:05"))
 		},
-		CallerKey:    "file",
-		EncodeCaller: zapcore.ShortCallerEncoder,
+		CallerKey:        "file",
+		EncodeCaller:     zapcore.ShortCallerEncoder,
+		ConsoleSeparator: "|",
 	})
 
 	infoLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
