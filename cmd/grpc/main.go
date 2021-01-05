@@ -3,19 +3,20 @@ package main
 import (
 	"fmt"
 	//micro "github.com/micro/go-micro/v2"
-	"github.com/micro/go-micro/v2/registry"
-	"github.com/micro/go-micro/v2/server"
-	svr "github.com/micro/go-micro/v2/server/grpc"
-	"github.com/micro/go-plugins/registry/etcdv3/v2"
 	"go-frame/global"
 	"go-frame/internal/controller/grpc/user"
-	"go-frame/internal/initialize"
 	"go-frame/internal/core/setting"
 	"go-frame/internal/core/wrapper"
+	"go-frame/internal/initialize"
 	"go-frame/proto/pb"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/micro/go-micro/v2/registry"
+	"github.com/micro/go-micro/v2/server"
+	svr "github.com/micro/go-micro/v2/server/grpc"
+	"github.com/micro/go-plugins/registry/etcd/v2"
 )
 
 func init() {
@@ -66,7 +67,7 @@ func main() {
 		server.Version("latest"),
 		server.Address(address),
 		server.Registry(
-			etcdv3.NewRegistry(
+			etcd.NewRegistry(
 				registry.Addrs(global.EtcdSetting.Addresses...),
 				registry.Timeout(st.RegistryTimeout),
 			),

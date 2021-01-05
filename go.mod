@@ -15,9 +15,8 @@ require (
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/golang/protobuf v1.4.3
 	github.com/gorilla/sessions v1.2.1
-	github.com/micro/go-micro v1.18.0
 	github.com/micro/go-micro/v2 v2.9.1
-	github.com/micro/go-plugins/registry/etcdv3/v2 v2.9.1
+	github.com/micro/go-plugins/registry/etcd/v2 v2.9.1
 	github.com/spf13/viper v1.7.1
 	go.opentelemetry.io/otel v0.15.0
 	go.opentelemetry.io/otel/exporters/trace/jaeger v0.15.0
