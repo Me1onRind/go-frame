@@ -1,9 +1,9 @@
 package global
 
 import (
-	"github.com/coreos/etcd/client"
+	"github.com/micro/go-micro/v2/client"
 )
 
 var (
-	c client.Client
+	GrpcClient client.Client
 )

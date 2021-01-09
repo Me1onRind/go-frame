@@ -10,7 +10,6 @@ replace (
 
 require (
 	github.com/Me1onRind/logrotate v0.0.0-20201207055048-cc28c78da981
-	github.com/coreos/etcd v3.3.18+incompatible
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator/v10 v10.4.1

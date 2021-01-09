@@ -5,6 +5,7 @@ import (
 	"github.com/Me1onRind/logrotate"
 	"github.com/gorilla/sessions"
 	"go-frame/global"
+	"go-frame/internal/core/client/grpc"
 	"go-frame/internal/core/setting"
 	"go-frame/internal/core/store"
 	"go.uber.org/zap"
@@ -52,6 +53,7 @@ func SetupLogger() error {
 		CallerKey:        "file",
 		EncodeCaller:     zapcore.ShortCallerEncoder,
 		ConsoleSeparator: "|",
+		EncodeDuration:   zapcore.MillisDurationEncoder,
 	})
 
 	infoLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
@@ -93,4 +95,8 @@ func initLogWriter(loggerSetting *setting.LoggerSettingS) (*logrotate.RotateLog,
 		return nil, err
 	}
 	return writer, nil
+}
+
+func SetGrpcClients() {
+	global.GrpcClient = grpc.NewClient(global.EtcdSetting.Addresses)
 }

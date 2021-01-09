@@ -33,6 +33,7 @@ func init() {
 	if err := initialize.SetupJaegerTracer("go-frame-grpc"); err != nil {
 		panic(err)
 	}
+	initialize.SetGrpcClients()
 }
 
 func SetGrpcSetting() error {

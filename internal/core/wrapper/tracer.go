@@ -27,6 +27,10 @@ func Tracing(fn server.HandlerFunc) server.HandlerFunc {
 		_, span := tr.Start(ctx, req.Method())
 		defer span.End()
 
+		if spanCtx == nil {
+			t := span.SpanContext()
+			spanCtx = &t
+		}
 		spanID = spanCtx.SpanID.String()
 		traceID = spanCtx.TraceID.String()
 

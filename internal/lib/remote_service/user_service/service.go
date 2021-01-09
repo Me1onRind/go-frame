@@ -2,9 +2,10 @@ package user_service
 
 import (
 	"github.com/micro/go-micro/v2/client"
+	"go-frame/global"
+	"go-frame/internal/core/client/grpc"
 	"go-frame/internal/core/context"
 	"go-frame/internal/core/errcode"
-	"go-frame/internal/lib/client/grpc"
 	"go-frame/proto/pb"
 	//"time"
 )
@@ -19,7 +20,7 @@ type RemoteUserService struct {
 
 func NewRemoteUserService() *RemoteUserService {
 	return &RemoteUserService{
-		UserRpcClient: grpc.GoFrameClient,
+		UserRpcClient: global.GrpcClient,
 	}
 }
 
