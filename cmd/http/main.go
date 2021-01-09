@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"go-frame/global"
+	"go-frame/internal/core/setting"
 	"go-frame/internal/initialize"
 	"go-frame/internal/initialize/validation"
-	"go-frame/internal/core/setting"
 	"go-frame/internal/routers"
 )
 

@@ -15,14 +15,6 @@ import (
 	"go.uber.org/zap"
 )
 
-var (
-	GoFrameClient client.Client
-)
-
-func InitClients() {
-	GoFrameClient = newGoFrameClient()
-}
-
 func JWTContext(ctx customContext.Context, jwtToken string) context.Context {
 	newCtx := ctx_helper.SetCustomContext(context.Background(), ctx)
 	return metadata.NewContext(newCtx, map[string]string{
@@ -32,11 +24,11 @@ func JWTContext(ctx customContext.Context, jwtToken string) context.Context {
 	})
 }
 
-func newGoFrameClient() client.Client {
+func NewClient(addresses []string) client.Client {
 	return cli.NewClient(
 		client.Registry(
 			etcd.NewRegistry(
-				registry.Addrs(global.EtcdSetting.Addresses...),
+				registry.Addrs(addresses...),
 				registry.Timeout(5*time.Second),
 			),
 		),

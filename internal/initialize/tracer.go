@@ -2,6 +2,7 @@ package initialize
 
 import (
 	"go-frame/global"
+
 	"go.opentelemetry.io/otel/exporters/trace/jaeger"
 	"go.opentelemetry.io/otel/label"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
