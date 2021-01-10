@@ -4,7 +4,7 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-func password(fl validator.FieldLevel) bool {
+func Password(fl validator.FieldLevel) bool {
 	value := []byte(fl.Field().String())
 	if len(value) < 8 || len(value) > 16 {
 		return false

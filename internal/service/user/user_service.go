@@ -34,7 +34,6 @@ func (u *UserService) Login(ctx context.Context, username string, password strin
 }
 
 func (u *UserService) GetUserByUserID(ctx context.Context, userID uint64, cache bool) (*user.User, *errcode.Error) {
-	return nil, errcode.ServerError
 	userInfo, err := u.UserDao.GetUserByUserID(ctx, userID)
 	if err != nil {
 		return nil, err

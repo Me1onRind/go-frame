@@ -7,11 +7,11 @@ service UserService {
 }
 
 message GetUserReq {
+    // @inject_tag: validate:"gt=10"
     uint64 userID = 1;
 }
 
 message UserInfo {
-    // @inject_tag: validate:"lgt:10"
     uint64 userID = 1;
     string username = 2;
 }

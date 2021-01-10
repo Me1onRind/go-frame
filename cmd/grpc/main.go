@@ -33,6 +33,9 @@ func init() {
 	if err := initialize.SetupJaegerTracer("go-frame-grpc"); err != nil {
 		panic(err)
 	}
+	if err := initialize.InitAndRegisterGlobalValidation(); err != nil {
+		panic(err)
+	}
 	initialize.SetGrpcClients()
 }
 
@@ -76,6 +79,7 @@ func main() {
 		server.WrapHandler(wrapper.Tracing),
 		server.WrapHandler(wrapper.AccessLogger),
 		server.WrapHandler(wrapper.JWT),
+		server.WrapHandler(wrapper.Validator),
 		server.WrapHandler(wrapper.ErrHandler),
 	)
 

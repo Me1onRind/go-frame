@@ -21,7 +21,8 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type GetUserReq struct {
-	UserID               uint64   `protobuf:"varint,1,opt,name=userID,proto3" json:"userID,omitempty"`
+	// @inject_tag: validate:"gt=10"
+	UserID               uint64   `protobuf:"varint,1,opt,name=userID,proto3" json:"userID,omitempty" validate:"gt=10"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -60,8 +61,7 @@ func (m *GetUserReq) GetUserID() uint64 {
 }
 
 type UserInfo struct {
-	// @inject_tag: validate:"lgt:10"
-	UserID               uint64   `protobuf:"varint,1,opt,name=userID,proto3" json:"userID,omitempty" validate:"lgt:10"`
+	UserID               uint64   `protobuf:"varint,1,opt,name=userID,proto3" json:"userID,omitempty"`
 	Username             string   `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
