@@ -6,7 +6,6 @@ import (
 	"go-frame/global"
 	"go-frame/internal/core/setting"
 	"go-frame/internal/initialize"
-	"go-frame/internal/initialize/validation"
 	"go-frame/internal/routers"
 )
 
@@ -21,16 +20,16 @@ func init() {
 	if err := initialize.SetupStore(); err != nil {
 		panic(err)
 	}
-	if err := validation.RegisterGinValidation(); err != nil {
-		panic(err)
-	}
 	if err := initialize.SetupCookie(); err != nil {
 		panic(err)
 	}
 	if err := initialize.SetupJaegerTracer("go-frame-api"); err != nil {
 		panic(err)
 	}
-	initialize.InitGrpcClient()
+	if err := initialize.RegisterGinValidation(); err != nil {
+		panic(err)
+	}
+	initialize.SetGrpcClients()
 }
 
 func SetupHttpSetting() error {

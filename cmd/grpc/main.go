@@ -27,13 +27,13 @@ func init() {
 	if err := initialize.SetupLogger(true); err != nil {
 		panic(err)
 	}
-	//if err := initialize.SetupStore(); err != nil {
-	//panic(err)
-	//}
+	if err := initialize.SetupStore(); err != nil {
+		panic(err)
+	}
 	if err := initialize.SetupJaegerTracer("go-frame-grpc"); err != nil {
 		panic(err)
 	}
-	if err := initialize.InitAndRegisterGlobalValidation(); err != nil {
+	if err := initialize.RegisterGlobalValidation(); err != nil {
 		panic(err)
 	}
 	initialize.SetGrpcClients()
