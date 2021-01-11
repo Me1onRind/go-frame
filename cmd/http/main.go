@@ -15,7 +15,7 @@ func init() {
 	if err := SetupHttpSetting(); err != nil {
 		panic(err)
 	}
-	if err := initialize.SetupLogger(); err != nil {
+	if err := initialize.SetupLogger(false); err != nil {
 		panic(err)
 	}
 	if err := initialize.SetupStore(); err != nil {

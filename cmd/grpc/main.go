@@ -24,12 +24,12 @@ func init() {
 	if err := SetGrpcSetting(); err != nil {
 		panic(err)
 	}
-	if err := initialize.SetupLogger(); err != nil {
+	if err := initialize.SetupLogger(true); err != nil {
 		panic(err)
 	}
-	if err := initialize.SetupStore(); err != nil {
-		panic(err)
-	}
+	//if err := initialize.SetupStore(); err != nil {
+	//panic(err)
+	//}
 	if err := initialize.SetupJaegerTracer("go-frame-grpc"); err != nil {
 		panic(err)
 	}
@@ -78,7 +78,7 @@ func main() {
 		),
 		server.WrapHandler(wrapper.Tracing),
 		server.WrapHandler(wrapper.AccessLogger),
-		server.WrapHandler(wrapper.JWT),
+		//server.WrapHandler(wrapper.JWT),
 		server.WrapHandler(wrapper.Validator),
 		server.WrapHandler(wrapper.ErrHandler),
 	)

@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/sessions"
 	"go-frame/global"
 	"go-frame/internal/core/client/grpc"
+	"go-frame/internal/core/logger"
 	"go-frame/internal/core/setting"
 	"go-frame/internal/core/store"
 	"go.uber.org/zap"
@@ -41,7 +42,7 @@ func SetupCookie() error {
 	return nil
 }
 
-func SetupLogger() error {
+func SetupLogger(setGoMicroLogger bool) error {
 	encoder := zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
 		MessageKey:  "msg",
 		LevelKey:    "level",
@@ -78,6 +79,9 @@ func SetupLogger() error {
 	)
 
 	global.Logger = zap.New(core, zap.AddCaller())
+	if setGoMicroLogger {
+		logger.SetGoMicroLogger(global.Logger)
+	}
 
 	return nil
 }
