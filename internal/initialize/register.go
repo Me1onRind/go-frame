@@ -27,7 +27,7 @@ func RegisterGinValidation() error {
 	return registerValidation(engine)
 }
 
-func InitAndRegisterGlobalValidation() error {
+func RegisterGlobalValidation() error {
 	global.Validate = validator.New()
 	return registerValidation(global.Validate)
 }

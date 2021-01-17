@@ -2,17 +2,22 @@ package initialize
 
 import (
 	"fmt"
-	"github.com/Me1onRind/logrotate"
-	"github.com/gorilla/sessions"
 	"go-frame/global"
 	"go-frame/internal/core/client/grpc"
+	"go-frame/internal/core/logger"
 	"go-frame/internal/core/setting"
 	"go-frame/internal/core/store"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/Me1onRind/logrotate"
+	"github.com/gorilla/sessions"
+	"go.opentelemetry.io/otel/exporters/trace/jaeger"
+	"go.opentelemetry.io/otel/label"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 func SetupStore() error {
@@ -41,7 +46,7 @@ func SetupCookie() error {
 	return nil
 }
 
-func SetupLogger() error {
+func SetupLogger(setGoMicroLogger bool) error {
 	encoder := zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
 		MessageKey:  "msg",
 		LevelKey:    "level",
@@ -56,12 +61,20 @@ func SetupLogger() error {
 		EncodeDuration:   zapcore.MillisDurationEncoder,
 	})
 
-	infoLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return lvl < zapcore.WarnLevel
-	})
-	warnLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return lvl >= zapcore.WarnLevel
-	})
+	initLogWriter := func(loggerSetting *setting.LoggerSettingS) (*logrotate.RotateLog, error) {
+		sep := string([]byte{filepath.Separator})
+		loggerSetting.LogDir = strings.Trim(loggerSetting.LogDir, sep)
+		logPath := loggerSetting.LogDir + sep + loggerSetting.LogName
+		writer, err := logrotate.NewRoteteLog(logPath+".2006010215",
+			logrotate.WithRotateTime(global.InfoLoggerSetting.RotateTimeDuration),
+			logrotate.WithCurLogLinkname(logPath),
+			logrotate.WithDeleteExpiredFile(global.InfoLoggerSetting.MaxAge, loggerSetting.LogName+".*"),
+		)
+		if err != nil {
+			return nil, err
+		}
+		return writer, nil
+	}
 
 	infoWriter, err := initLogWriter(global.InfoLoggerSetting)
 	if err != nil {
@@ -72,31 +85,40 @@ func SetupLogger() error {
 		return err
 	}
 
+	infoLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl < zapcore.WarnLevel
+	})
+	warnLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl >= zapcore.WarnLevel
+	})
 	core := zapcore.NewTee(
 		zapcore.NewCore(encoder, zapcore.AddSync(infoWriter), infoLevel),
 		zapcore.NewCore(encoder, zapcore.AddSync(warnWriter), warnLevel),
 	)
 
 	global.Logger = zap.New(core, zap.AddCaller())
+	if setGoMicroLogger {
+		logger.SetGoMicroLogger(global.Logger.WithOptions(zap.AddCallerSkip(2)))
+	}
 
 	return nil
 }
 
-func initLogWriter(loggerSetting *setting.LoggerSettingS) (*logrotate.RotateLog, error) {
-	sep := string([]byte{filepath.Separator})
-	loggerSetting.LogDir = strings.Trim(loggerSetting.LogDir, sep)
-	logPath := loggerSetting.LogDir + sep + loggerSetting.LogName
-	writer, err := logrotate.NewRoteteLog(logPath+".2006010215",
-		logrotate.WithRotateTime(global.InfoLoggerSetting.RotateTimeDuration),
-		logrotate.WithCurLogLinkname(logPath),
-		logrotate.WithDeleteExpiredFile(global.InfoLoggerSetting.MaxAge, loggerSetting.LogName+".*"),
-	)
-	if err != nil {
-		return nil, err
-	}
-	return writer, nil
-}
-
 func SetGrpcClients() {
 	global.GrpcClient = grpc.NewClient(global.EtcdSetting.Addresses)
+}
+
+func SetupJaegerTracer(serviceName string) error {
+	var err error
+	global.JaegerPipelineFlush, err = jaeger.InstallNewPipeline(
+		jaeger.WithCollectorEndpoint("http://localhost:14268/api/traces"),
+		jaeger.WithProcess(jaeger.Process{
+			ServiceName: serviceName,
+			Tags: []label.KeyValue{
+				label.String("exporter", "jaeger"),
+			},
+		}),
+		jaeger.WithSDK(&sdktrace.Config{DefaultSampler: sdktrace.AlwaysSample()}),
+	)
+	return err
 }
