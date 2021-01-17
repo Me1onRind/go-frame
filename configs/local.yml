@@ -3,8 +3,8 @@ HttpServer:
   Host: "0.0.0.0"
   Port: 8080
   Cookies:
-      StoreType: "CookieStore"
-      SecretKey: "*fhjebd8&*#2"
+    StoreType: "CookieStore"
+    SecretKey: "*fhjebd8&*#2"
 
 GrpcServer:
   Host: "0.0.0.0"
@@ -39,12 +39,13 @@ Logger:
     RotateTimeDuration: "1h"
 
 JWT:
-    Issuser: "mr"
-    Secret: "dfhwehkn323"
+  Issuser: "mr"
+  Secret: "dfhwehkn323"
 
 Etcd:
-    Addresses:
-        - "127.0.0.1:2379"
-        - "127.0.0.1:2381"
-        - "127.0.0.1:2383"
+  Addresses:
+    - "127.0.0.1:2379"
+    - "127.0.0.1:2381"
+    - "127.0.0.1:2383"
+
 
