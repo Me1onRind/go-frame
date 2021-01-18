@@ -1,30 +1,23 @@
-package grpc
+package initialize
 
 import (
 	"context"
 	"go-frame/global"
-	customContext "go-frame/internal/core/context"
 	"go-frame/internal/utils/ctx_helper"
 	"time"
 
 	"github.com/micro/go-micro/v2/client"
 	cli "github.com/micro/go-micro/v2/client/grpc"
-	"github.com/micro/go-micro/v2/metadata"
 	"github.com/micro/go-micro/v2/registry"
-	"github.com/micro/go-plugins/registry/etcd/v2"
+	"github.com/micro/go-micro/v2/registry/etcd"
 	"go.uber.org/zap"
 )
 
-func JWTContext(ctx customContext.Context, jwtToken string) context.Context {
-	newCtx := ctx_helper.SetCustomContext(context.Background(), ctx)
-	return metadata.NewContext(newCtx, map[string]string{
-		global.ProtocolJWTTokenKey: jwtToken,
-		global.ProtocolSpanIDKey:   ctx.Span().SpanContext().SpanID.String(),
-		global.ProtocolTraceIDKey:  ctx.Span().SpanContext().TraceID.String(),
-	})
+func SetupGrpcClients() {
+	global.GrpcClient = newGrpcClient(global.EtcdSetting.Addresses)
 }
 
-func NewClient(addresses []string) client.Client {
+func newGrpcClient(addresses []string) client.Client {
 	return cli.NewClient(
 		client.Registry(
 			etcd.NewRegistry(

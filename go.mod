@@ -17,6 +17,7 @@ require (
 	github.com/gorilla/sessions v1.2.1
 	github.com/micro/go-micro/v2 v2.9.1
 	github.com/micro/go-plugins/registry/etcd/v2 v2.9.1
+	github.com/minio/minio-go/v7 v7.0.7
 	github.com/spf13/viper v1.7.1
 	go.opentelemetry.io/otel v0.15.0
 	go.opentelemetry.io/otel/exporters/trace/jaeger v0.15.0

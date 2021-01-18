@@ -3,14 +3,14 @@ package initialize
 import (
 	"fmt"
 	"go-frame/global"
-	"go-frame/internal/core/client/grpc"
 	"go-frame/internal/core/logger"
 	"go-frame/internal/core/setting"
 	"go-frame/internal/core/store"
-	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"path/filepath"
 	"strings"
 	"time"
+
+	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 
 	"github.com/Me1onRind/logrotate"
 	"github.com/gorilla/sessions"
@@ -102,10 +102,6 @@ func SetupLogger(setGoMicroLogger bool) error {
 	}
 
 	return nil
-}
-
-func SetGrpcClients() {
-	global.GrpcClient = grpc.NewClient(global.EtcdSetting.Addresses)
 }
 
 func SetupJaegerTracer(serviceName string) error {

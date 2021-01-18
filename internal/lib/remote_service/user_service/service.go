@@ -1,12 +1,13 @@
 package user_service
 
 import (
-	"github.com/micro/go-micro/v2/client"
 	"go-frame/global"
-	"go-frame/internal/core/client/grpc"
 	"go-frame/internal/core/context"
 	"go-frame/internal/core/errcode"
+	"go-frame/internal/utils/ctx_helper"
 	"go-frame/proto/pb"
+
+	"github.com/micro/go-micro/v2/client"
 	//"time"
 )
 
@@ -27,7 +28,7 @@ func NewRemoteUserService() *RemoteUserService {
 func (r *RemoteUserService) GetUserInfoByUserID(ctx context.Context, userID uint64) (*pb.UserInfo, *errcode.Error) {
 	req := r.UserRpcClient.NewRequest("go-frame-grpc", "UserService.GetUserInfo", &pb.GetUserReq{UserID: userID})
 	userInfo := &pb.UserInfo{}
-	if err := r.UserRpcClient.Call(grpc.JWTContext(ctx, jwtToken), req, userInfo); err != nil {
+	if err := r.UserRpcClient.Call(ctx_helper.JWTContext(ctx, jwtToken), req, userInfo); err != nil {
 		return nil, errcode.FromRpcError(err)
 	}
 

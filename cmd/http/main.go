@@ -29,7 +29,7 @@ func init() {
 	if err := initialize.RegisterGinValidation(); err != nil {
 		panic(err)
 	}
-	initialize.SetGrpcClients()
+	initialize.SetupGrpcClients()
 }
 
 func SetupHttpSetting() error {
