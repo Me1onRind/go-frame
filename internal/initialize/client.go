@@ -10,11 +10,21 @@ import (
 	cli "github.com/micro/go-micro/v2/client/grpc"
 	"github.com/micro/go-micro/v2/registry"
 	"github.com/micro/go-micro/v2/registry/etcd"
+	minio "github.com/minio/minio-go"
 	"go.uber.org/zap"
 )
 
-func SetupGrpcClients() {
+func SetupGrpcClients() error {
 	global.GrpcClient = newGrpcClient(global.EtcdSetting.Addresses)
+
+	// minio client
+	var err error
+	minioSetting := global.MinioSetting
+	global.MinioClient, err = newMinioClient(minioSetting.Endpoint, minioSetting.AccessKeyID, minioSetting.SecretAccessKey)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func newGrpcClient(addresses []string) client.Client {
@@ -46,4 +56,8 @@ func callLogger(fn client.CallFunc) client.CallFunc {
 
 		return err
 	}
+}
+
+func newMinioClient(endpoint, accessKeyID, secreAccessKey string) (*minio.Client, error) {
+	return minio.New(endpoint, accessKeyID, secreAccessKey, false)
 }

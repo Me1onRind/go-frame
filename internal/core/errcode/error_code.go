@@ -9,6 +9,7 @@ const (
 	RecordNotFoundCode    int = 1000004
 	CopyStructErrorCode   int = 1000005
 	RemoteServerErrorCode int = 1000006
+	MinioErrorCode        int = 1000007
 
 	InvalidLoginParamCode int = 2000000
 	UnLoginCode           int = 2000001
@@ -28,6 +29,7 @@ var (
 	RecordNotFound    = NewError(RecordNotFoundCode, "Record Not Found")
 	CopyStructError   = NewError(CopyStructErrorCode, "Copy Struct Error")
 	RemoteServerError = NewError(RemoteServerErrorCode, "Remote Server Error")
+	MinioError        = NewError(MinioErrorCode, "Minio Error")
 
 	InvalidLoginParamError = NewError(InvalidLoginParamCode, "Invalid Username Or Password")
 	UnLoginError           = NewError(UnLoginCode, "Not Login")

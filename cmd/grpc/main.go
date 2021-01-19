@@ -36,7 +36,9 @@ func init() {
 	if err := initialize.RegisterGlobalValidation(); err != nil {
 		panic(err)
 	}
-	initialize.SetupGrpcClients()
+	if err := initialize.SetupGrpcClients(); err != nil {
+		panic(err)
+	}
 }
 
 func SetGrpcSetting() error {

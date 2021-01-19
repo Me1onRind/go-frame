@@ -13,4 +13,5 @@ var (
 	ErrorLoggerSetting *setting.LoggerSettingS
 	JWTSetting         *setting.JWTSettingS
 	EtcdSetting        *setting.EtcdSettingS
+	MinioSetting       *setting.MinioSettingS
 )

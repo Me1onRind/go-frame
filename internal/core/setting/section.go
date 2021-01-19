@@ -51,3 +51,10 @@ type JWTSettingS struct {
 type EtcdSettingS struct {
 	Addresses []string
 }
+
+type MinioSettingS struct {
+	Endpoint        string
+	AccessKeyID     string
+	SecretAccessKey string
+	BucketName      string
+}
