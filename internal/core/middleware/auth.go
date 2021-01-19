@@ -3,10 +3,10 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 	"go-frame/global"
-	"go-frame/internal/lib/auth"
-	"go-frame/internal/lib/session"
 	"go-frame/internal/core/errcode"
 	"go-frame/internal/core/gateway"
+	"go-frame/internal/core/session"
+	"go-frame/internal/lib/auth"
 	"go-frame/internal/utils/ctx_helper"
 )
 

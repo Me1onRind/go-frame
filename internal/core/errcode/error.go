@@ -3,7 +3,7 @@ package errcode
 import (
 	"fmt"
 	"github.com/micro/go-micro/v2/errors"
-	"google.golang.org/grpc/codes"
+	//"google.golang.org/grpc/codes"
 )
 
 type Error struct {
@@ -40,22 +40,22 @@ func (e *Error) WithError(err error) *Error {
 	return newErr
 }
 
-func toGrpcCode(code int) codes.Code {
-	var statusCode codes.Code
-	switch code {
-	case ServerErrorCode:
-		statusCode = codes.Internal
-	case InvalidParamCode:
-		statusCode = codes.InvalidArgument
-	case JWTAuthorizedFailCode, JWTTimeoutCode:
-		statusCode = codes.Unauthenticated
-	case RecordNotFoundCode:
-		statusCode = codes.NotFound
-	default:
-		statusCode = codes.Unknown
-	}
-	return statusCode
-}
+//func toGrpcCode(code int) codes.Code {
+//var statusCode codes.Code
+//switch code {
+//case ServerErrorCode:
+//statusCode = codes.Internal
+//case InvalidParamCode:
+//statusCode = codes.InvalidArgument
+//case JWTAuthorizedFailCode, JWTTimeoutCode:
+//statusCode = codes.Unauthenticated
+//case RecordNotFoundCode:
+//statusCode = codes.NotFound
+//default:
+//statusCode = codes.Unknown
+//}
+//return statusCode
+//}
 
 func (e *Error) ToRpcError() error {
 	return errors.New("go-frame", e.Msg, int32(e.Code))

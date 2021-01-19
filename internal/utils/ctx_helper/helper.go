@@ -7,10 +7,15 @@ import (
 	//"go-frame/internal/core/logger"
 )
 
+type contextKey int
+
 const (
-	commonContextKey = "commonCtx"
-	httpContextKey   = "httpCtx"
-	customContextKey = "customCtx"
+	commonContextKey contextKey = iota
+	customContextKey
+)
+
+const (
+	httpContextKey = "httpCtx"
 )
 
 func SetCommonContext(c context.Context, ctx *customContext.CommonContext) context.Context {

@@ -85,7 +85,7 @@ func main() {
 		server.WrapHandler(wrapper.ErrHandler),
 	)
 
-	pb.RegisterUserServiceHandler(grpcServer, user.NewUserGrpcController())
+	_ = pb.RegisterUserServiceHandler(grpcServer, user.NewUserGrpcController())
 	if err := grpcServer.Start(); err != nil {
 		panic(err)
 	}
@@ -93,10 +93,8 @@ func main() {
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 
-	select {
-	case <-sigs:
-	}
+	<-sigs
 
-	grpcServer.Stop()
+	_ = grpcServer.Stop()
 
 }

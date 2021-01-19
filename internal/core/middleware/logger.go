@@ -52,7 +52,7 @@ func AccessLogger() gin.HandlerFunc {
 			zap.String("rawQuery", c.Request.URL.RawQuery),
 			zap.String("reqBody", string(request)),
 			zap.String("clientIP", c.ClientIP()),
-			zap.String("resp", string(lw.buff.Bytes())),
+			zap.String("resp", lw.buff.String()),
 			zap.Duration("cost", end.Sub(start)),
 		)
 	}

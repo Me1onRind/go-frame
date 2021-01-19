@@ -3,7 +3,7 @@ package user
 import (
 	"go-frame/internal/core/context"
 	"go-frame/internal/core/errcode"
-	"go-frame/internal/lib/session"
+	"go-frame/internal/core/session"
 	"go-frame/internal/service/user"
 	"go-frame/protocol/user_proto"
 )
@@ -29,7 +29,9 @@ func (u *UserController) Login(ctx *context.HttpContext) (interface{}, *errcode.
 		UserID:   userInfo.ID,
 		Username: userInfo.Username,
 	}
-	session.SetUserInfo(ctx.Context, sessionUserInfo)
+	if err := session.SetUserInfo(ctx.Context, sessionUserInfo); err != nil {
+		return nil, err
+	}
 
 	return sessionUserInfo, nil
 }

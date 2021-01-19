@@ -61,5 +61,5 @@ func main() {
 	r := routers.NewRouter()
 	httpServerSetting := global.HttpServerSetting
 	gin.SetMode(httpServerSetting.RunMode)
-	r.Run(fmt.Sprintf("%s:%d", httpServerSetting.Host, httpServerSetting.Port))
+	_ = r.Run(fmt.Sprintf("%s:%d", httpServerSetting.Host, httpServerSetting.Port))
 }

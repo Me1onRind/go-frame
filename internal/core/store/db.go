@@ -39,10 +39,10 @@ func NewDBEngine(dbSetting *setting.DBSettingS) (*gorm.DB, error) {
 	sqlDB.SetMaxOpenConns(dbSetting.MaxOpenConns)
 	sqlDB.SetConnMaxLifetime(dbSetting.ConnectMaxLifeTime)
 
-	db.Callback().Query().Before("*").Register("my_plugin:tracing_start", tracingStart())
-	db.Callback().Query().After("*").Register("my_plugin:tracing_end", tracingEnd("SELECT"))
-	db.Callback().Create().Before("*").Register("my_plugin:create_ctime_mtime", createCTimeAndMTime)
-	db.Callback().Update().Before("*").Register("my_plugin:update_mtime", updateMTime)
+	_ = db.Callback().Query().Before("*").Register("my_plugin:tracing_start", tracingStart())
+	_ = db.Callback().Query().After("*").Register("my_plugin:tracing_end", tracingEnd("SELECT"))
+	_ = db.Callback().Create().Before("*").Register("my_plugin:create_ctime_mtime", createCTimeAndMTime)
+	_ = db.Callback().Update().Before("*").Register("my_plugin:update_mtime", updateMTime)
 
 	return db, nil
 }

@@ -10,6 +10,7 @@ const (
 	CopyStructErrorCode   int = 1000005
 	RemoteServerErrorCode int = 1000006
 	MinioErrorCode        int = 1000007
+	SaveSessionErrorCode  int = 1000008
 
 	InvalidLoginParamCode int = 2000000
 	UnLoginCode           int = 2000001
@@ -30,6 +31,7 @@ var (
 	CopyStructError   = NewError(CopyStructErrorCode, "Copy Struct Error")
 	RemoteServerError = NewError(RemoteServerErrorCode, "Remote Server Error")
 	MinioError        = NewError(MinioErrorCode, "Minio Error")
+	SaveSessionError  = NewError(SaveSessionErrorCode, "Save Session Error")
 
 	InvalidLoginParamError = NewError(InvalidLoginParamCode, "Invalid Username Or Password")
 	UnLoginError           = NewError(UnLoginCode, "Not Login")
