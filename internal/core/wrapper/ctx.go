@@ -10,8 +10,7 @@ import (
 
 func InitContext(fn server.HandlerFunc) server.HandlerFunc {
 	return func(ctx context.Context, req server.Request, resp interface{}) error {
-		c := customCtx.NewContext(global.Logger)
-		c.Ctx = ctx
+		c := customCtx.NewContext(global.Logger, ctx)
 		ctx = customCtx.LoadIntoContext(c, ctx)
 		return fn(ctx, req, resp)
 	}

@@ -8,10 +8,8 @@ import (
 	"github.com/micro/go-micro/v2/metadata"
 )
 
-func JWTContext(ctx customContext.Context, jwtToken string) context.Context {
-	return metadata.NewContext(context.Background(), map[string]string{
+func JWTContext(ctx *customContext.Context, jwtToken string) context.Context {
+	return metadata.NewContext(ctx, map[string]string{
 		global.ProtocolJWTTokenKey: jwtToken,
-		global.ProtocolSpanIDKey:   ctx.Span().SpanContext().SpanID.String(),
-		global.ProtocolTraceIDKey:  ctx.Span().SpanContext().TraceID.String(),
 	})
 }

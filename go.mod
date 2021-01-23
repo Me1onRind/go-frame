@@ -22,12 +22,14 @@ require (
 	github.com/opentracing/opentracing-go v1.1.0
 	github.com/sirupsen/logrus v1.7.0 // indirect
 	github.com/spf13/viper v1.7.1
+	go.elastic.co/apm v1.10.0
+	go.elastic.co/apm/module/apmhttp v1.10.0
+	go.elastic.co/apm/module/apmot v1.10.0
 	go.opentelemetry.io/otel v0.15.0
 	go.opentelemetry.io/otel/exporters/trace/jaeger v0.15.0
 	go.opentelemetry.io/otel/sdk v0.15.0
 	go.uber.org/zap v1.16.0
 	golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899 // indirect
-	google.golang.org/grpc v1.31.1
 	gopkg.in/ini.v1 v1.57.0 // indirect
 	gorm.io/driver/mysql v1.0.3
 	gorm.io/gorm v1.20.9

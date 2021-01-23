@@ -2,8 +2,8 @@ package user
 
 import (
 	"context"
+	customCtx "go-frame/internal/core/context"
 	"go-frame/internal/service/user"
-	"go-frame/internal/utils/ctx_helper"
 	"go-frame/proto/pb"
 )
 
@@ -18,7 +18,7 @@ func NewUserGrpcController() *UserGrpcController {
 }
 
 func (u *UserGrpcController) GetUserInfo(c context.Context, req *pb.GetUserReq, resp *pb.UserInfo) error {
-	ctx := ctx_helper.GetCommonContext(c)
+	ctx := customCtx.GetFromContext(c)
 	userInfo, err := u.UserService.GetUserByUserID(ctx, req.UserID, true)
 	if err != nil {
 		return err.ToRpcError()

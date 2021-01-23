@@ -11,6 +11,7 @@ const (
 	RemoteServerErrorCode int = 1000006
 	MinioErrorCode        int = 1000007
 	SaveSessionErrorCode  int = 1000008
+	OptExtractErrorCode   int = 1000009
 
 	InvalidLoginParamCode int = 2000000
 	UnLoginCode           int = 2000001
@@ -40,4 +41,5 @@ var (
 	JWTAuthorizedFailError = NewError(JWTAuthorizedFailCode, "JWT Authorized Fail")
 	JWTTimeoutError        = NewError(JWTTimeoutCode, "JWT Timeout")
 	AppSecretWrongError    = NewError(AppSecretWrongCode, "App Secret Wrong")
+	OptExtractError        = NewError(OptExtractErrorCode, "Decode Opentracing Carrier Fail")
 )

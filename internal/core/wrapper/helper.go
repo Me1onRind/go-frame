@@ -14,16 +14,6 @@ func getJWTToken(ctx context.Context) string {
 }
 
 func getSpanCtx(ctx context.Context) *trace.SpanContext {
-	spanID, _ := metadata.Get(ctx, global.ProtocolSpanIDKey)
-	traceID, _ := metadata.Get(ctx, global.ProtocolTraceIDKey)
-
-	if len(traceID) > 0 && len(spanID) > 0 {
-		return &trace.SpanContext{
-			TraceID: stringToTraceID(traceID),
-			SpanID:  stringToSpanID(spanID),
-		}
-	}
-
 	return nil
 }
 

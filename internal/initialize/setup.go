@@ -6,14 +6,18 @@ import (
 	"go-frame/internal/core/logger"
 	"go-frame/internal/core/setting"
 	"go-frame/internal/core/store"
+	"os"
 	"path/filepath"
 	"strings"
 	"time"
 
+	"go.elastic.co/apm"
+	"go.elastic.co/apm/module/apmot"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 
 	"github.com/Me1onRind/logrotate"
 	"github.com/gorilla/sessions"
+	opentracing "github.com/opentracing/opentracing-go"
 	"go.opentelemetry.io/otel/exporters/trace/jaeger"
 	"go.opentelemetry.io/otel/label"
 	"go.uber.org/zap"
@@ -117,4 +121,13 @@ func SetupJaegerTracer(serviceName string) error {
 		jaeger.WithSDK(&sdktrace.Config{DefaultSampler: sdktrace.AlwaysSample()}),
 	)
 	return err
+}
+
+func SetupOpentracingTracer() {
+	os.Setenv("ELASTIC_APM_SERVER_URL", "http://localhost:8200")
+	os.Setenv("ELASTIC_APM_SECRET_TOKEN", "")
+	os.Setenv("ELASTIC_APM_STACK_TRACE_LIMIT", "0")
+	os.Setenv("ELASTIC_APM_USE_ELASTIC_TRACEPARENT_HEADER", "false")
+	tracer, _ := apm.NewTracer("go-frame", "0.0.1")
+	opentracing.SetGlobalTracer(apmot.New(apmot.WithTracer(tracer)))
 }

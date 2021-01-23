@@ -17,7 +17,7 @@ func NewUserDao() *UserDao {
 	}
 }
 
-func (u *UserDao) GetUserByUserID(ctx context.Context, userID uint64) (*User, *errcode.Error) {
+func (u *UserDao) GetUserByUserID(ctx *context.Context, userID uint64) (*User, *errcode.Error) {
 	var user User
 	err := ctx.ReadDB(u.dbKey).WithContext(ctx).Where("user_id=?", userID).Take(&user).Error
 	if err == gorm.ErrRecordNotFound {
@@ -29,7 +29,7 @@ func (u *UserDao) GetUserByUserID(ctx context.Context, userID uint64) (*User, *e
 	return &user, nil
 }
 
-func (u *UserDao) GetUserByUsername(ctx context.Context, username string) (*User, *errcode.Error) {
+func (u *UserDao) GetUserByUsername(ctx *context.Context, username string) (*User, *errcode.Error) {
 	var user User
 	err := ctx.ReadDB(u.dbKey).Where("username = ?", username).Take(&user).Error
 	if err == gorm.ErrRecordNotFound {

@@ -25,7 +25,7 @@ func NewRemoteUserService() *RemoteUserService {
 	}
 }
 
-func (r *RemoteUserService) GetUserInfoByUserID(ctx context.Context, userID uint64) (*pb.UserInfo, *errcode.Error) {
+func (r *RemoteUserService) GetUserInfoByUserID(ctx *context.Context, userID uint64) (*pb.UserInfo, *errcode.Error) {
 	req := r.UserRpcClient.NewRequest("go-frame-grpc", "UserService.GetUserInfo", &pb.GetUserReq{UserID: userID})
 	userInfo := &pb.UserInfo{}
 	if err := r.UserRpcClient.Call(ctx_helper.JWTContext(ctx, jwtToken), req, userInfo); err != nil {

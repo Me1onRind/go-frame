@@ -20,7 +20,7 @@ func NewUserService() *UserService {
 	}
 }
 
-func (u *UserService) Login(ctx context.Context, username string, password string) (*user.User, *errcode.Error) {
+func (u *UserService) Login(ctx *context.Context, username string, password string) (*user.User, *errcode.Error) {
 	user, err := u.UserDao.GetUserByUsername(ctx, username)
 	if err != nil {
 		return nil, err
@@ -33,7 +33,7 @@ func (u *UserService) Login(ctx context.Context, username string, password strin
 	return user, nil
 }
 
-func (u *UserService) GetUserByUserID(ctx context.Context, userID uint64, cache bool) (*user.User, *errcode.Error) {
+func (u *UserService) GetUserByUserID(ctx *context.Context, userID uint64, cache bool) (*user.User, *errcode.Error) {
 	userInfo, err := u.UserDao.GetUserByUserID(ctx, userID)
 	if err != nil {
 		return nil, err
@@ -41,6 +41,6 @@ func (u *UserService) GetUserByUserID(ctx context.Context, userID uint64, cache 
 	return userInfo, nil
 }
 
-func (u *UserService) GetUserFromRemote(ctx context.Context, userID uint64) (*pb.UserInfo, *errcode.Error) {
+func (u *UserService) GetUserFromRemote(ctx *context.Context, userID uint64) (*pb.UserInfo, *errcode.Error) {
 	return u.RemoteUserService.GetUserInfoByUserID(ctx, userID)
 }

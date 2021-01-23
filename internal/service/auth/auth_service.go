@@ -19,7 +19,7 @@ func NewAuthService() *AuthService {
 	}
 }
 
-func (a *AuthService) GenerateJWTToken(ctx context.Context, appKey, appSecret string) (string, int64, *errcode.Error) {
+func (a *AuthService) GenerateJWTToken(ctx *context.Context, appKey, appSecret string) (string, int64, *errcode.Error) {
 	authInfo, err := a.AuthDao.GetAuthByAppKey(ctx, appKey)
 	if err != nil {
 		return "", 0, err
@@ -45,6 +45,6 @@ func (a *AuthService) GenerateJWTToken(ctx context.Context, appKey, appSecret st
 	return auth.GenerateJwtToken(ctx, param)
 }
 
-func (a *AuthService) ListAuths(ctx context.Context) ([]*authDao.Auth, int64, *errcode.Error) {
+func (a *AuthService) ListAuths(ctx *context.Context) ([]*authDao.Auth, int64, *errcode.Error) {
 	return a.AuthDao.ListAuths(ctx, 0, 10000)
 }

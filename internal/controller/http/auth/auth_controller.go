@@ -18,8 +18,8 @@ func NewAuthController() *AuthController {
 	}
 }
 
-func (a *AuthController) GenerateToken(ctx *context.HttpContext) (interface{}, *errcode.Error) {
-	request := ctx.Raw.(*auth_proto.GenerateTokenReq)
+func (a *AuthController) GenerateToken(ctx *context.Context, raw interface{}) (interface{}, *errcode.Error) {
+	request := raw.(*auth_proto.GenerateTokenReq)
 	token, expireAt, err := a.AuthService.GenerateJWTToken(ctx, request.AppKey, request.AppSecret)
 	if err != nil {
 		return nil, err
@@ -31,7 +31,7 @@ func (a *AuthController) GenerateToken(ctx *context.HttpContext) (interface{}, *
 	}, nil
 }
 
-func (a *AuthController) ListAuths(ctx *context.HttpContext) (interface{}, *errcode.Error) {
+func (a *AuthController) ListAuths(ctx *context.Context, raw interface{}) (interface{}, *errcode.Error) {
 	list, total, err := a.AuthService.ListAuths(ctx)
 	if err != nil {
 		return nil, err

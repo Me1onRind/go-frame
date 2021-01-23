@@ -2,11 +2,12 @@ package middleware
 
 import (
 	"bytes"
-	"github.com/gin-gonic/gin"
-	"go-frame/internal/utils/ctx_helper"
-	"go.uber.org/zap"
+	"go-frame/internal/core/context"
 	"io/ioutil"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type logWriter struct {
@@ -19,12 +20,12 @@ func (w *logWriter) Write(b []byte) (int, error) {
 	return w.ResponseWriter.Write(b)
 }
 
-func AccessLogger() gin.HandlerFunc {
+func AccessLog() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ctx := ctx_helper.GetHttpContext(c)
+		ctx := context.GetFromGinContext(c)
 		request, err := c.GetRawData()
 		if err != nil {
-			ctx.Logger().Error("Get request body error", zap.Error(err))
+			ctx.Logger.Error("Get request body error", zap.Error(err))
 		}
 		c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(request))
 
@@ -34,26 +35,21 @@ func AccessLogger() gin.HandlerFunc {
 		}
 		c.Writer = lw
 
-		ctx.Logger().Info("HTTP Request Start",
-			zap.String("method", c.Request.Method),
-			zap.String("PATH", c.Request.URL.Path),
-			zap.String("rawQuery", c.Request.URL.RawQuery),
-			zap.String("reqBody", string(request)),
-			zap.String("clientIP", c.ClientIP()),
-		)
-
 		start := time.Now()
-		c.Next()
-		end := time.Now()
+		defer func() {
+			end := time.Now()
+			ctx.Logger.Info("access log",
+				zap.String("method", c.Request.Method),
+				zap.String("path", c.Request.URL.Path),
+				zap.String("rawQuery", c.Request.URL.RawQuery),
+				zap.String("reqBody", string(request)),
+				zap.String("clientIP", c.ClientIP()),
+				zap.String("resp", lw.buff.String()),
+				zap.Duration("cost", end.Sub(start)),
+			)
+		}()
 
-		ctx.Logger().Info("HTTP Request End",
-			zap.String("method", c.Request.Method),
-			zap.String("PATH", c.Request.URL.Path),
-			zap.String("rawQuery", c.Request.URL.RawQuery),
-			zap.String("reqBody", string(request)),
-			zap.String("clientIP", c.ClientIP()),
-			zap.String("resp", lw.buff.String()),
-			zap.Duration("cost", end.Sub(start)),
-		)
+		c.Next()
+
 	}
 }

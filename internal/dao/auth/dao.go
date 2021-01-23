@@ -14,7 +14,7 @@ func NewAuthDao() *AuthDao {
 	return &AuthDao{}
 }
 
-func (a *AuthDao) ListAuths(ctx context.Context, page int, pageSize int) ([]*Auth, int64, *errcode.Error) {
+func (a *AuthDao) ListAuths(ctx *context.Context, page int, pageSize int) ([]*Auth, int64, *errcode.Error) {
 	var list []*Auth
 	var total int64
 	db := ctx.ReadDB(global.DefaultDB)
@@ -29,7 +29,7 @@ func (a *AuthDao) ListAuths(ctx context.Context, page int, pageSize int) ([]*Aut
 	return list, total, nil
 }
 
-func (a *AuthDao) GetAuthByAppKey(ctx context.Context, appKey string) (*Auth, *errcode.Error) {
+func (a *AuthDao) GetAuthByAppKey(ctx *context.Context, appKey string) (*Auth, *errcode.Error) {
 	var auth Auth
 	if err := ctx.ReadDB(global.DefaultDB).Where("app_key=?", appKey).Preload("Config").Take(&auth).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {

@@ -7,8 +7,9 @@ import (
 
 func NewRouter() *gin.Engine {
 	r := gin.New()
+	r.Use(middleware.InitContext())
 	r.Use(middleware.Tracing())
-	r.Use(middleware.AccessLogger())
+	r.Use(middleware.AccessLog())
 	r.Use(middleware.Recover())
 
 	apiRouter := r.Group("/api")

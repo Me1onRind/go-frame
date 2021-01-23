@@ -2,7 +2,7 @@ package wrapper
 
 import (
 	"context"
-	"go-frame/internal/utils/ctx_helper"
+	customCtx "go-frame/internal/core/context"
 
 	"github.com/micro/go-micro/v2/errors"
 	"github.com/micro/go-micro/v2/server"
@@ -15,8 +15,8 @@ func ErrHandler(fn server.HandlerFunc) server.HandlerFunc {
 		if err != nil {
 			if e, ok := err.(*errors.Error); ok {
 				if e.Code == 500 {
-					newCtx := ctx_helper.GetCommonContext(ctx)
-					newCtx.Logger().Error("Internal Server Error", zap.Error(err))
+					newCtx := customCtx.GetFromContext(ctx)
+					newCtx.Logger.Error("Internal Server Error", zap.Error(err))
 				}
 			}
 		}

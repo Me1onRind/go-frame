@@ -3,9 +3,11 @@ package context
 import (
 	"context"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"go-frame/global"
 	"go-frame/internal/core/errcode"
+
+	"github.com/gin-gonic/gin"
+	"github.com/opentracing/opentracing-go"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -14,8 +16,8 @@ import (
 type TranscationFunc func() *errcode.Error
 
 type Context struct {
+	context.Context
 	GinCtx *gin.Context
-	Ctx    context.Context
 
 	Span   trace.Span
 	Logger *zap.Logger
@@ -23,13 +25,19 @@ type Context struct {
 
 	txs     map[string]*gorm.DB
 	traceID string
+	span    opentracing.Span
 }
 
-func NewContext(logger *zap.Logger) *Context {
-	return &Context{
-		Logger: logger,
-		txs:    map[string]*gorm.DB{},
+func NewContext(logger *zap.Logger, libCtx context.Context) *Context {
+	c := &Context{
+		Logger:  logger,
+		txs:     map[string]*gorm.DB{},
+		Context: libCtx,
 	}
+	if libCtx == nil {
+		c.Context = LoadIntoContext(c, context.Background())
+	}
+	return c
 }
 
 func (c *Context) ReadDB(dbKey string) *gorm.DB {
@@ -90,4 +98,8 @@ func (c *Context) TraceID() string {
 
 func (c *Context) SetLoggerPrefix(fields ...zap.Field) {
 	c.Logger = c.Logger.With(fields...)
+}
+
+func (c *Context) SetSpan(span opentracing.Span) {
+	c.span = span
 }

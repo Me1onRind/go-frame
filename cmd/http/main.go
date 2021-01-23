@@ -23,15 +23,13 @@ func init() {
 	if err := initialize.SetupCookie(); err != nil {
 		panic(err)
 	}
-	if err := initialize.SetupJaegerTracer("go-frame-api"); err != nil {
-		panic(err)
-	}
 	if err := initialize.RegisterGinValidation(); err != nil {
 		panic(err)
 	}
-	if err := initialize.SetupGrpcClients(); err != nil {
+	if err := initialize.SetClients(); err != nil {
 		panic(err)
 	}
+	initialize.SetupOpentracingTracer()
 }
 
 func SetupHttpSetting() error {

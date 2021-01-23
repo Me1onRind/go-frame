@@ -2,6 +2,7 @@ package session
 
 import (
 	"encoding/json"
+	"go-frame/internal/core/context"
 
 	"github.com/gin-gonic/gin"
 
@@ -19,11 +20,11 @@ type UserInfo struct {
 	Username string `json:"username"`
 }
 
-func SetUserInfo(c *gin.Context, userInfo *UserInfo) *errcode.Error {
-	session, _ := global.CookieStore.Get(c.Request, global.UserSessionName)
+func SetUserInfo(c *context.Context, userInfo *UserInfo) *errcode.Error {
+	session, _ := global.CookieStore.Get(c.GinCtx.Request, global.UserSessionName)
 	userInfoBytes, _ := json.Marshal(userInfo)
 	session.Values[UserInfoKey] = userInfoBytes
-	if err := session.Save(c.Request, c.Writer); err != nil {
+	if err := session.Save(c.GinCtx.Request, c.GinCtx.Writer); err != nil {
 		return errcode.SaveSessionError.WithError(err)
 	}
 	return nil

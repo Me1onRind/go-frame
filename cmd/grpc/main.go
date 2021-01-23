@@ -30,15 +30,13 @@ func init() {
 	if err := initialize.SetupStore(); err != nil {
 		panic(err)
 	}
-	if err := initialize.SetupJaegerTracer("go-frame-grpc"); err != nil {
-		panic(err)
-	}
+	//if err := initialize.SetupJaegerTracer("go-frame-grpc"); err != nil {
+	//panic(err)
+	//}
 	if err := initialize.RegisterGlobalValidation(); err != nil {
 		panic(err)
 	}
-	if err := initialize.SetupGrpcClients(); err != nil {
-		panic(err)
-	}
+	initialize.SetupOpentracingTracer()
 }
 
 func SetGrpcSetting() error {
@@ -87,6 +85,7 @@ func main() {
 	)
 
 	_ = pb.RegisterUserServiceHandler(grpcServer, user.NewUserGrpcController())
+	fmt.Printf("Start server:%s\n", address)
 	if err := grpcServer.Start(); err != nil {
 		panic(err)
 	}

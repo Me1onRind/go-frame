@@ -3,15 +3,15 @@ package wrapper
 import (
 	"context"
 	"github.com/micro/go-micro/v2/server"
-	"go-frame/internal/utils/ctx_helper"
+	customCtx "go-frame/internal/core/context"
 	"go.uber.org/zap"
 	"time"
 )
 
 func AccessLogger(fn server.HandlerFunc) server.HandlerFunc {
 	return func(ctx context.Context, req server.Request, resp interface{}) error {
-		newCtx := ctx_helper.GetCommonContext(ctx)
-		newCtx.Logger().Info("GRPC Request Start",
+		newCtx := customCtx.GetFromContext(ctx)
+		newCtx.Logger.Info("GRPC Request Start",
 			zap.String("method", req.Method()),
 			zap.Any("reqBody", req.Body()),
 		)
@@ -20,7 +20,7 @@ func AccessLogger(fn server.HandlerFunc) server.HandlerFunc {
 		err := fn(ctx, req, resp)
 		end := time.Now()
 
-		newCtx.Logger().Info("GRPC Request Start",
+		newCtx.Logger.Info("GRPC Request Start",
 			zap.String("method", req.Method()),
 			zap.Any("reqBody", req.Body()),
 			zap.Any("resp", resp),

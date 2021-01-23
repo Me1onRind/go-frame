@@ -1,36 +1,42 @@
 package middleware
 
 import (
-	"github.com/gin-gonic/gin"
 	"go-frame/global"
-	customContext "go-frame/internal/core/context"
-	"go-frame/internal/utils/ctx_helper"
-	"go.opentelemetry.io/otel"
+	"go-frame/internal/core/context"
+	"go-frame/internal/core/errcode"
+	"go-frame/internal/core/gateway"
+	"go-frame/internal/utils/optracing"
+
+	"github.com/gin-gonic/gin"
+	opentracing "github.com/opentracing/opentracing-go"
+	"go.elastic.co/apm/module/apmhttp"
 	"go.uber.org/zap"
-	//"go.opentelemetry.io/otel/trace"
-	"context"
 )
 
 func Tracing() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		requestID := c.Request.Header.Get(global.ProtocolRequestID)
+		traceParent := c.Request.Header.Get(apmhttp.W3CTraceparentHeader)
 
-		tr := otel.Tracer("tracer")
-		_, span := tr.Start(context.Background(), c.Request.URL.Path)
-		defer span.End()
+		if len(traceParent) == 0 && len(requestID) > 0 {
+			c.Request.Header.Set(apmhttp.W3CTraceparentHeader, optracing.RequestIDToTraceparent(requestID))
+		}
 
-		traceID := span.SpanContext().TraceID.String()
-		spanID := span.SpanContext().SpanID.String()
+		spanCtx, err := opentracing.GlobalTracer().Extract(opentracing.HTTPHeaders, c.Request.Header)
+		if err != nil && err != opentracing.ErrSpanContextNotFound {
+			c.JSON(200, gateway.NewResponse(errcode.OptExtractError, nil))
+		}
 
-		httpContext := customContext.NewHttpContext(c,
-			customContext.WithSpan(span),
-			customContext.WithZapLogger(
-				global.Logger.With(
-					zap.String("traceID", traceID),
-					zap.String("spanID", spanID),
-				),
-			),
-		)
-		ctx_helper.SetHttpContext(c, httpContext)
+		span := opentracing.StartSpan(c.Request.URL.Path, opentracing.ChildOf(spanCtx))
+		defer span.Finish()
+
+		if len(requestID) == 0 {
+			requestID = optracing.RequestIDFromSpan(span.Context())
+		}
+
+		ctx := context.GetFromGinContext(c)
+		ctx.SetSpan(span)
+		ctx.SetLoggerPrefix(zap.String("requestID", requestID))
 
 		c.Next()
 	}

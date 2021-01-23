@@ -18,8 +18,8 @@ func NewUserContoller() *UserController {
 	}
 }
 
-func (u *UserController) Login(ctx *context.HttpContext) (interface{}, *errcode.Error) {
-	request := ctx.Raw.(*user_proto.LoginReq)
+func (u *UserController) Login(ctx *context.Context, raw interface{}) (interface{}, *errcode.Error) {
+	request := raw.(*user_proto.LoginReq)
 	userInfo, err := u.UserService.Login(ctx, request.Username, request.Password)
 	if err != nil {
 		return nil, err
@@ -29,15 +29,15 @@ func (u *UserController) Login(ctx *context.HttpContext) (interface{}, *errcode.
 		UserID:   userInfo.ID,
 		Username: userInfo.Username,
 	}
-	if err := session.SetUserInfo(ctx.Context, sessionUserInfo); err != nil {
+	if err := session.SetUserInfo(ctx, sessionUserInfo); err != nil {
 		return nil, err
 	}
 
 	return sessionUserInfo, nil
 }
 
-func (u *UserController) GetUserInfo(ctx *context.HttpContext) (interface{}, *errcode.Error) {
-	request := ctx.Raw.(*user_proto.GetUserInfoReq)
+func (u *UserController) GetUserInfo(ctx *context.Context, raw interface{}) (interface{}, *errcode.Error) {
+	request := raw.(*user_proto.GetUserInfoReq)
 	userInfo, err := u.UserService.GetUserFromRemote(ctx, request.UserID)
 	if err != nil {
 		return nil, err
