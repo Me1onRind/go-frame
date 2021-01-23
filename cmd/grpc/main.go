@@ -78,6 +78,7 @@ func main() {
 				registry.Timeout(st.RegistryTimeout),
 			),
 		),
+		server.WrapHandler(wrapper.InitContext),
 		server.WrapHandler(wrapper.Tracing),
 		server.WrapHandler(wrapper.AccessLogger),
 		//server.WrapHandler(wrapper.JWT),

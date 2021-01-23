@@ -19,6 +19,7 @@ require (
 	github.com/micro/go-micro/v2 v2.9.1
 	github.com/micro/go-plugins/registry/etcd/v2 v2.9.1
 	github.com/minio/minio-go v6.0.14+incompatible
+	github.com/opentracing/opentracing-go v1.1.0
 	github.com/sirupsen/logrus v1.7.0 // indirect
 	github.com/spf13/viper v1.7.1
 	go.opentelemetry.io/otel v0.15.0

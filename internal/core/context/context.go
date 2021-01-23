@@ -3,6 +3,7 @@ package context
 import (
 	"context"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"go-frame/global"
 	"go-frame/internal/core/errcode"
 	"go.opentelemetry.io/otel/trace"
@@ -12,36 +13,26 @@ import (
 
 type TranscationFunc func() *errcode.Error
 
-type Context interface {
-	context.Context
+type Context struct {
+	GinCtx *gin.Context
+	Ctx    context.Context
 
-	Env() string
+	Span   trace.Span
+	Logger *zap.Logger
+	Env    string
 
-	ReadDB(dbKey string) *gorm.DB
-	WriteDB(dbKey string) *gorm.DB
-	Transaction(dbKey string, fc TranscationFunc) *errcode.Error
-
-	Span() trace.Span
-	Logger() *zap.Logger
+	txs     map[string]*gorm.DB
+	traceID string
 }
 
-type contextS struct {
-	txs    map[string]*gorm.DB
-	span   trace.Span
-	logger *zap.Logger
-}
-
-func newContextS() *contextS {
-	return &contextS{
-		txs: map[string]*gorm.DB{},
+func NewContext(logger *zap.Logger) *Context {
+	return &Context{
+		Logger: logger,
+		txs:    map[string]*gorm.DB{},
 	}
 }
 
-func (c *contextS) Env() string {
-	return global.Environment.Env
-}
-
-func (c *contextS) ReadDB(dbKey string) *gorm.DB {
+func (c *Context) ReadDB(dbKey string) *gorm.DB {
 	if db := c.txs[dbKey]; db != nil {
 		return db
 	}
@@ -53,7 +44,7 @@ func (c *contextS) ReadDB(dbKey string) *gorm.DB {
 	panic(fmt.Sprintf("Can't get read db, dbKey[%s]", dbKey))
 }
 
-func (c *contextS) WriteDB(dbKey string) *gorm.DB {
+func (c *Context) WriteDB(dbKey string) *gorm.DB {
 	if db := c.txs[dbKey]; db != nil {
 		return db
 	}
@@ -65,7 +56,7 @@ func (c *contextS) WriteDB(dbKey string) *gorm.DB {
 	panic(fmt.Sprintf("Can't get write db, dbKey[%s]", dbKey))
 }
 
-func (c *contextS) Transaction(dbKey string, fc TranscationFunc) (err *errcode.Error) {
+func (c *Context) Transaction(dbKey string, fc TranscationFunc) (err *errcode.Error) {
 	// allow nested
 	if db := c.txs[dbKey]; db != nil {
 		return fc()
@@ -93,10 +84,10 @@ func (c *contextS) Transaction(dbKey string, fc TranscationFunc) (err *errcode.E
 	return err
 }
 
-func (c *contextS) Span() trace.Span {
-	return c.span
+func (c *Context) TraceID() string {
+	return c.traceID
 }
 
-func (c *contextS) Logger() *zap.Logger {
-	return c.logger
+func (c *Context) SetLoggerPrefix(fields ...zap.Field) {
+	c.Logger = c.Logger.With(fields...)
 }
