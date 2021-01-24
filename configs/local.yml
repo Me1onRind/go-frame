@@ -48,4 +48,9 @@ Etcd:
     - "127.0.0.1:2381"
     - "127.0.0.1:2383"
 
+Minio:
+  Endpoint: "127.0.0.1:9000"
+  AccessKeyID: ""
+  SecretAccessKey: ""
+  BucketName: "go-frame-bucket"
 

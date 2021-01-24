@@ -52,6 +52,7 @@ func SetGrpcSetting() error {
 		"Logger.Error": &global.ErrorLoggerSetting,
 		"JWT":          &global.JWTSetting,
 		"Etcd":         &global.EtcdSetting,
+		"Minio":        &global.MinioSetting,
 	}
 
 	for k, v := range LoadSections {
