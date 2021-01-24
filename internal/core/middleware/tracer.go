@@ -20,11 +20,15 @@ func Tracing() gin.HandlerFunc {
 
 		if len(traceParent) == 0 && len(requestID) > 0 {
 			c.Request.Header.Set(apmhttp.W3CTraceparentHeader, optracing.RequestIDToTraceparent(requestID))
+		} else if len(traceParent) > 0 && len(requestID) == 0 {
+			requestID = optracing.RequestIDFromW3CTraceparent(traceParent)
 		}
 
 		spanCtx, err := opentracing.GlobalTracer().Extract(opentracing.HTTPHeaders, c.Request.Header)
 		if err != nil && err != opentracing.ErrSpanContextNotFound {
 			c.JSON(200, gateway.NewResponse(errcode.OptExtractError, nil))
+			c.Abort()
+			return
 		}
 
 		span := opentracing.StartSpan(c.Request.URL.Path, opentracing.ChildOf(spanCtx))
@@ -36,6 +40,7 @@ func Tracing() gin.HandlerFunc {
 
 		ctx := context.GetFromGinContext(c)
 		ctx.SetSpan(span)
+		ctx.SetRequestID(requestID)
 		ctx.SetLoggerPrefix(zap.String("requestID", requestID))
 
 		c.Next()

@@ -18,10 +18,15 @@ func RequestIDFromSpan(sm opentracing.SpanContext) string {
 	carrier := opentracing.TextMapCarrier{}
 	_ = opentracing.GlobalTracer().Inject(sm, opentracing.TextMap, &carrier)
 	if v, ok := carrier[apmhttp.W3CTraceparentHeader]; ok {
-		arr := strings.Split(v, "-")
-		if len(arr) >= 2 {
-			return arr[1]
-		}
+		return RequestIDFromW3CTraceparent(v)
+	}
+	return ""
+}
+
+func RequestIDFromW3CTraceparent(value string) string {
+	arr := strings.Split(value, "-")
+	if len(arr) >= 2 {
+		return arr[1]
 	}
 	return ""
 }

@@ -23,9 +23,9 @@ type Context struct {
 	Logger *zap.Logger
 	Env    string
 
-	txs     map[string]*gorm.DB
-	traceID string
-	span    opentracing.Span
+	requestID string
+	txs       map[string]*gorm.DB
+	span      opentracing.Span
 }
 
 func NewContext(logger *zap.Logger, libCtx context.Context) *Context {
@@ -92,8 +92,8 @@ func (c *Context) Transaction(dbKey string, fc TranscationFunc) (err *errcode.Er
 	return err
 }
 
-func (c *Context) TraceID() string {
-	return c.traceID
+func (c *Context) SetRequestID(requestID string) {
+	c.requestID = requestID
 }
 
 func (c *Context) SetLoggerPrefix(fields ...zap.Field) {
@@ -102,4 +102,8 @@ func (c *Context) SetLoggerPrefix(fields ...zap.Field) {
 
 func (c *Context) SetSpan(span opentracing.Span) {
 	c.span = span
+}
+
+func (c *Context) RequestID() string {
+	return c.requestID
 }
