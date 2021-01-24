@@ -15,12 +15,10 @@ import (
 type TranscationFunc func() *errcode.Error
 
 type Context struct {
-	context.Context
 	GinCtx *gin.Context
+	context.Context
 
-	logger *zap.Logger
-	Env    string
-
+	logger    *zap.Logger
 	requestID string
 	txs       map[string]*gorm.DB
 	span      opentracing.Span
