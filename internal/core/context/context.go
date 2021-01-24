@@ -8,7 +8,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/opentracing/opentracing-go"
-	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -19,8 +18,7 @@ type Context struct {
 	context.Context
 	GinCtx *gin.Context
 
-	Span   trace.Span
-	Logger *zap.Logger
+	logger *zap.Logger
 	Env    string
 
 	requestID string
@@ -30,7 +28,7 @@ type Context struct {
 
 func NewContext(logger *zap.Logger, libCtx context.Context) *Context {
 	c := &Context{
-		Logger:  logger,
+		logger:  logger,
 		txs:     map[string]*gorm.DB{},
 		Context: libCtx,
 	}
@@ -97,7 +95,7 @@ func (c *Context) SetRequestID(requestID string) {
 }
 
 func (c *Context) SetLoggerPrefix(fields ...zap.Field) {
-	c.Logger = c.Logger.With(fields...)
+	c.logger = c.logger.With(fields...)
 }
 
 func (c *Context) SetSpan(span opentracing.Span) {
@@ -106,4 +104,12 @@ func (c *Context) SetSpan(span opentracing.Span) {
 
 func (c *Context) RequestID() string {
 	return c.requestID
+}
+
+func (c *Context) Logger() *zap.Logger {
+	return c.logger
+}
+
+func (c *Context) Span() opentracing.Span {
+	return c.span
 }

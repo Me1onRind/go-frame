@@ -45,7 +45,7 @@ func callLogger(fn client.CallFunc) client.CallFunc {
 		begin := time.Now()
 		err := fn(ctx, node, req, rsp, opts)
 
-		c.Logger.Info("GRPC Call End",
+		c.Logger().Info("GRPC Call End",
 			zap.String("method", req.Method()),
 			zap.Any("reqBody", req.Body()),
 			zap.String("target", node.Address),

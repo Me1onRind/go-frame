@@ -25,7 +25,7 @@ func AccessLog() gin.HandlerFunc {
 		ctx := context.GetFromGinContext(c)
 		request, err := c.GetRawData()
 		if err != nil {
-			ctx.Logger.Error("Get request body error", zap.Error(err))
+			ctx.Logger().Error("Get request body error", zap.Error(err))
 		}
 		c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(request))
 
@@ -38,7 +38,7 @@ func AccessLog() gin.HandlerFunc {
 		start := time.Now()
 		defer func() {
 			end := time.Now()
-			ctx.Logger.Info("access log",
+			ctx.Logger().Info("access log",
 				zap.String("method", c.Request.Method),
 				zap.String("path", c.Request.URL.Path),
 				zap.String("rawQuery", c.Request.URL.RawQuery),

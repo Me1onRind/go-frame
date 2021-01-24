@@ -16,7 +16,7 @@ func ErrHandler(fn server.HandlerFunc) server.HandlerFunc {
 			if e, ok := err.(*errors.Error); ok {
 				if e.Code == 500 {
 					newCtx := customCtx.GetFromContext(ctx)
-					newCtx.Logger.Error("Internal Server Error", zap.Error(err))
+					newCtx.Logger().Error("Internal Server Error", zap.Error(err))
 				}
 			}
 		}

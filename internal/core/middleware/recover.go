@@ -13,7 +13,7 @@ func Recover() gin.HandlerFunc {
 		defer func() {
 			if err := recover(); err != nil {
 				ctx := context.GetFromGinContext(c)
-				ctx.Logger.Sugar().Errorf("Panic recover err:%v, stack:\n%s", err, debug.Stack())
+				ctx.Logger().Sugar().Errorf("Panic recover err:%v, stack:\n%s", err, debug.Stack())
 				c.JSON(200, gateway.NewResponse(errcode.ServerError, nil))
 				c.Abort()
 			}

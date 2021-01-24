@@ -37,7 +37,7 @@ func GenerateJwtToken(ctx *context.Context, param *GenerateJwtTokenParam) (strin
 		claims.StandardClaims.ExpiresAt = nowTime.Add(time.Duration(param.Expires) * time.Second).Unix()
 	}
 
-	ctx.Logger.Info("JWT authrize begin", zap.Any("claims", claims), zap.String("secret", jwtSestting.Secret))
+	ctx.Logger().Info("JWT authrize begin", zap.Any("claims", claims), zap.String("secret", jwtSestting.Secret))
 
 	tokenClainms := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	token, err := tokenClainms.SignedString([]byte(jwtSestting.Secret))
@@ -48,7 +48,7 @@ func GenerateJwtToken(ctx *context.Context, param *GenerateJwtTokenParam) (strin
 }
 
 func JWTAuth(ctx *context.Context, token string) *errcode.Error {
-	ctx.Logger.Info("JWT authrize begin", zap.String("token", token))
+	ctx.Logger().Info("JWT authrize begin", zap.String("token", token))
 	_, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(global.JWTSetting.Secret), nil
 	})

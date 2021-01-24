@@ -1,7 +1,6 @@
 package store
 
 import (
-	ct "context"
 	"fmt"
 	"go-frame/internal/core/context"
 	"go-frame/internal/core/setting"
@@ -60,10 +59,11 @@ func createCTimeAndMTime(db *gorm.DB) {
 func tracingStart() func(*gorm.DB) {
 	return func(db *gorm.DB) {
 		if db.Statement.Context != nil {
-			if ctx, ok := db.Statement.Context.(context.Context); ok {
-				parentCtx := trace.ContextWithSpan(ct.Background(), ctx.Span)
-				_, span := ctx.Span.Tracer().Start(parentCtx, "sql")
-				db.Set(spanKey, span)
+			if ctx, ok := db.Statement.Context.(*context.Context); ok {
+				ctx.Span()
+				//parentCtx := trace.ContextWithSpan(ct.Background(), ctx.Span())
+				//_, span := ctx.Span().Tracer().Start(parentCtx, "sql")
+				//db.Set(spanKey, span)
 			}
 		}
 	}
