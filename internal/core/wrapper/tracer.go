@@ -4,7 +4,6 @@ import (
 	"context"
 	"go-frame/global"
 	customCtx "go-frame/internal/core/context"
-	"go-frame/internal/core/errcode"
 	"go-frame/internal/utils/optracing"
 
 	"github.com/micro/go-micro/v2/metadata"
@@ -26,11 +25,14 @@ func Tracing(fn server.HandlerFunc) server.HandlerFunc {
 		}
 
 		carrier := opentracing.TextMapCarrier(md)
-		spanCtx, err := opentracing.GlobalTracer().Extract(opentracing.TextMap, carrier)
-		if err != nil && err != opentracing.ErrSpanContextNotFound {
-			return errcode.OptExtractError.ToRpcError()
+		spanCtx, _ := opentracing.GlobalTracer().Extract(opentracing.TextMap, carrier)
+
+		var span opentracing.Span
+		if spanCtx != nil {
+			span = opentracing.StartSpan(req.Method(), opentracing.ChildOf(spanCtx))
+		} else {
+			span = opentracing.StartSpan(req.Method())
 		}
-		span := opentracing.StartSpan(req.Method(), opentracing.ChildOf(spanCtx))
 		defer span.Finish()
 
 		if len(requestID) == 0 {

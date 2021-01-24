@@ -128,6 +128,8 @@ func SetupOpentracingTracer() {
 	os.Setenv("ELASTIC_APM_SECRET_TOKEN", "")
 	os.Setenv("ELASTIC_APM_STACK_TRACE_LIMIT", "0")
 	os.Setenv("ELASTIC_APM_USE_ELASTIC_TRACEPARENT_HEADER", "false")
+	os.Setenv("ELASTIC_APM_TRANSACTION_SAMPLE_RATE", "1.0")
+	//os.Setenv("ELASTIC_APM_DISABLE_METRICS", "system.process.*")
 	tracer, _ := apm.NewTracer("go-frame", "0.0.1")
 	opentracing.SetGlobalTracer(apmot.New(apmot.WithTracer(tracer)))
 }

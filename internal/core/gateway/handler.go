@@ -26,6 +26,10 @@ func Json(handler Handler, paramType interface{}) gin.HandlerFunc {
 			e = errcode.Success
 		}
 
+		span := ctx.Span()
+		span.SetTag("errcode", e.Code)
+		span.SetTag("message", e.Msg)
+
 		c.JSON(200, NewResponse(e, data))
 	}
 }
