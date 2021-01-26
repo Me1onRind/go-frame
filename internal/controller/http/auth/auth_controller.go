@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"go-frame/internal/core/context"
+	"go-frame/internal/core/custom_ctx"
 	"go-frame/internal/core/errcode"
 	"go-frame/internal/service/auth"
 	"go-frame/protocol"
@@ -18,7 +18,7 @@ func NewAuthController() *AuthController {
 	}
 }
 
-func (a *AuthController) GenerateToken(ctx *context.Context, raw interface{}) (interface{}, *errcode.Error) {
+func (a *AuthController) GenerateToken(ctx *custom_ctx.Context, raw interface{}) (interface{}, *errcode.Error) {
 	request := raw.(*auth_proto.GenerateTokenReq)
 	token, expireAt, err := a.AuthService.GenerateJWTToken(ctx, request.AppKey, request.AppSecret)
 	if err != nil {
@@ -31,7 +31,7 @@ func (a *AuthController) GenerateToken(ctx *context.Context, raw interface{}) (i
 	}, nil
 }
 
-func (a *AuthController) ListAuths(ctx *context.Context, raw interface{}) (interface{}, *errcode.Error) {
+func (a *AuthController) ListAuths(ctx *custom_ctx.Context, raw interface{}) (interface{}, *errcode.Error) {
 	list, total, err := a.AuthService.ListAuths(ctx)
 	if err != nil {
 		return nil, err

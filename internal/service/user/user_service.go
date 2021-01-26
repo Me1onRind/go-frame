@@ -1,7 +1,7 @@
 package user
 
 import (
-	"go-frame/internal/core/context"
+	"go-frame/internal/core/custom_ctx"
 	"go-frame/internal/core/errcode"
 	"go-frame/internal/dao/user"
 	"go-frame/internal/lib/remote_service/user_service"
@@ -20,7 +20,7 @@ func NewUserService() *UserService {
 	}
 }
 
-func (u *UserService) Login(ctx *context.Context, username string, password string) (*user.User, *errcode.Error) {
+func (u *UserService) Login(ctx *custom_ctx.Context, username string, password string) (*user.User, *errcode.Error) {
 	user, err := u.UserDao.GetUserByUsername(ctx, username)
 	if err != nil {
 		return nil, err
@@ -33,7 +33,7 @@ func (u *UserService) Login(ctx *context.Context, username string, password stri
 	return user, nil
 }
 
-func (u *UserService) GetUserByUserID(ctx *context.Context, userID uint64, cache bool) (*user.User, *errcode.Error) {
+func (u *UserService) GetUserByUserID(ctx *custom_ctx.Context, userID uint64, cache bool) (*user.User, *errcode.Error) {
 	userInfo, err := u.UserDao.GetUserByUserID(ctx, userID)
 	if err != nil {
 		return nil, err
@@ -41,6 +41,6 @@ func (u *UserService) GetUserByUserID(ctx *context.Context, userID uint64, cache
 	return userInfo, nil
 }
 
-func (u *UserService) GetUserFromRemote(ctx *context.Context, userID uint64) (*pb.UserInfo, *errcode.Error) {
+func (u *UserService) GetUserFromRemote(ctx *custom_ctx.Context, userID uint64) (*pb.UserInfo, *errcode.Error) {
 	return u.RemoteUserService.GetUserInfoByUserID(ctx, userID)
 }

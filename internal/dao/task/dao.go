@@ -3,7 +3,7 @@ package task
 import (
 	"go-frame/global"
 	"go-frame/internal/constant/task_constant"
-	"go-frame/internal/core/context"
+	"go-frame/internal/core/custom_ctx"
 	"go-frame/internal/core/errcode"
 	"go-frame/internal/utils/date"
 
@@ -19,7 +19,7 @@ func NewTaskDao() *TaskDao {
 	return t
 }
 
-func (t *TaskDao) Create(ctx *context.Context, task *Task) *errcode.Error {
+func (t *TaskDao) Create(ctx *custom_ctx.Context, task *Task) *errcode.Error {
 	db := ctx.WriteDB(global.DefaultDB)
 	if err := db.Save(task).Error; err != nil {
 		ctx.Logger().Error("Create task record failed", zap.Any("task", task), zap.Error(err))
@@ -28,7 +28,7 @@ func (t *TaskDao) Create(ctx *context.Context, task *Task) *errcode.Error {
 	return nil
 }
 
-func (t *TaskDao) BatchUpdateExecInfo(ctx *context.Context, ids []uint64) (e *errcode.Error) {
+func (t *TaskDao) BatchUpdateExecInfo(ctx *custom_ctx.Context, ids []uint64) (e *errcode.Error) {
 	db := ctx.WriteDB(global.DefaultDB)
 	now := date.UnixTime()
 	db = db.Model(&Task{}).Where("id IN ?", ids).Updates(map[string]interface{}{
@@ -44,7 +44,7 @@ func (t *TaskDao) BatchUpdateExecInfo(ctx *context.Context, ids []uint64) (e *er
 	return nil
 }
 
-func (t *TaskDao) GetValidExecTasks(ctx *context.Context, limit int) ([]*Task, *errcode.Error) {
+func (t *TaskDao) GetValidExecTasks(ctx *custom_ctx.Context, limit int) ([]*Task, *errcode.Error) {
 	var result []*Task
 
 	now := date.UnixTime()

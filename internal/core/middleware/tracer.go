@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"go-frame/global"
-	"go-frame/internal/core/context"
+	"go-frame/internal/constant/proto_constant"
+	"go-frame/internal/core/custom_ctx"
 	"go-frame/internal/utils/optracing"
 
 	"github.com/gin-gonic/gin"
@@ -13,7 +13,7 @@ import (
 
 func Tracing() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		requestID := c.Request.Header.Get(global.ProtocolRequestID)
+		requestID := c.Request.Header.Get(proto_constant.ProtocolRequestID)
 		traceParent := c.Request.Header.Get(apmhttp.W3CTraceparentHeader)
 
 		if len(traceParent) == 0 && len(requestID) > 0 {
@@ -36,7 +36,7 @@ func Tracing() gin.HandlerFunc {
 			requestID = optracing.RequestIDFromSpan(span.Context())
 		}
 
-		ctx := context.GetFromGinContext(c)
+		ctx := custom_ctx.GetFromGinContext(c)
 		ctx.SetSpan(span)
 		ctx.SetRequestID(requestID)
 		ctx.SetLoggerPrefix(zap.String("requestID", requestID))

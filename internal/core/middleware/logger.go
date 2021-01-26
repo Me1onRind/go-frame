@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"bytes"
-	"go-frame/internal/core/context"
+	"go-frame/internal/core/custom_ctx"
 	"io/ioutil"
 	"time"
 
@@ -22,7 +22,7 @@ func (w *logWriter) Write(b []byte) (int, error) {
 
 func AccessLog() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ctx := context.GetFromGinContext(c)
+		ctx := custom_ctx.GetFromGinContext(c)
 		request, err := c.GetRawData()
 		if err != nil {
 			ctx.Logger().Error("Get request body error", zap.Error(err))

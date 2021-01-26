@@ -2,7 +2,7 @@ package wrapper
 
 import (
 	"context"
-	customCtx "go-frame/internal/core/context"
+	customCtx "go-frame/internal/core/custom_ctx"
 	"go-frame/internal/core/errcode"
 
 	"github.com/micro/go-micro/v2/errors"

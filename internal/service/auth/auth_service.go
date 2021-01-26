@@ -2,7 +2,7 @@ package auth
 
 import (
 	"go-frame/internal/constant/auth_constant"
-	"go-frame/internal/core/context"
+	"go-frame/internal/core/custom_ctx"
 	"go-frame/internal/core/errcode"
 	authDao "go-frame/internal/dao/auth"
 	"go-frame/internal/lib/auth"
@@ -19,7 +19,7 @@ func NewAuthService() *AuthService {
 	}
 }
 
-func (a *AuthService) GenerateJWTToken(ctx *context.Context, appKey, appSecret string) (string, int64, *errcode.Error) {
+func (a *AuthService) GenerateJWTToken(ctx *custom_ctx.Context, appKey, appSecret string) (string, int64, *errcode.Error) {
 	authInfo, err := a.AuthDao.GetAuthByAppKey(ctx, appKey)
 	if err != nil {
 		return "", 0, err
@@ -45,6 +45,6 @@ func (a *AuthService) GenerateJWTToken(ctx *context.Context, appKey, appSecret s
 	return auth.GenerateJwtToken(ctx, param)
 }
 
-func (a *AuthService) ListAuths(ctx *context.Context) ([]*authDao.Auth, int64, *errcode.Error) {
+func (a *AuthService) ListAuths(ctx *custom_ctx.Context) ([]*authDao.Auth, int64, *errcode.Error) {
 	return a.AuthDao.ListAuths(ctx, 0, 10000)
 }

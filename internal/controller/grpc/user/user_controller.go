@@ -2,7 +2,7 @@ package user
 
 import (
 	"context"
-	customCtx "go-frame/internal/core/context"
+	customCtx "go-frame/internal/core/custom_ctx"
 	"go-frame/internal/service/user"
 	"go-frame/proto/pb"
 )

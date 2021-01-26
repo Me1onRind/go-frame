@@ -2,16 +2,16 @@ package gateway
 
 import (
 	"github.com/gin-gonic/gin"
-	"go-frame/internal/core/context"
+	"go-frame/internal/core/custom_ctx"
 	"go-frame/internal/core/errcode"
 	"reflect"
 )
 
-type Handler func(c *context.Context, raw interface{}) (data interface{}, err *errcode.Error)
+type Handler func(c *custom_ctx.Context, raw interface{}) (data interface{}, err *errcode.Error)
 
 func Json(handler Handler, paramType interface{}) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		ctx := context.GetFromGinContext(c)
+		ctx := custom_ctx.GetFromGinContext(c)
 		var raw interface{}
 		if paramType != nil {
 			requestParams := parserProtocol(paramType)

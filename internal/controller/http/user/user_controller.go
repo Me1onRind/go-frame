@@ -1,7 +1,7 @@
 package user
 
 import (
-	"go-frame/internal/core/context"
+	"go-frame/internal/core/custom_ctx"
 	"go-frame/internal/core/errcode"
 	"go-frame/internal/core/session"
 	"go-frame/internal/service/user"
@@ -18,7 +18,7 @@ func NewUserContoller() *UserController {
 	}
 }
 
-func (u *UserController) Login(ctx *context.Context, raw interface{}) (interface{}, *errcode.Error) {
+func (u *UserController) Login(ctx *custom_ctx.Context, raw interface{}) (interface{}, *errcode.Error) {
 	request := raw.(*user_proto.LoginReq)
 	userInfo, err := u.UserService.Login(ctx, request.Username, request.Password)
 	if err != nil {
@@ -36,7 +36,7 @@ func (u *UserController) Login(ctx *context.Context, raw interface{}) (interface
 	return sessionUserInfo, nil
 }
 
-func (u *UserController) GetUserInfo(ctx *context.Context, raw interface{}) (interface{}, *errcode.Error) {
+func (u *UserController) GetUserInfo(ctx *custom_ctx.Context, raw interface{}) (interface{}, *errcode.Error) {
 	request := raw.(*user_proto.GetUserInfoReq)
 	userInfo, err := u.UserService.GetUserFromRemote(ctx, request.UserID)
 	if err != nil {

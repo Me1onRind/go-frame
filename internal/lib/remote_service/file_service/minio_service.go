@@ -3,7 +3,7 @@ package file_service
 import (
 	"context"
 	"go-frame/global"
-	customCtx "go-frame/internal/core/context"
+	"go-frame/internal/core/custom_ctx"
 	"go-frame/internal/core/errcode"
 	"time"
 
@@ -27,7 +27,7 @@ func newMinioService() *minioService {
 	return m
 }
 
-func (m *minioService) Upload(ctx customCtx.Context, localFilePath string, timeout time.Duration) (fileIndex string, err *errcode.Error) {
+func (m *minioService) Upload(ctx *custom_ctx.Context, localFilePath string, timeout time.Duration) (fileIndex string, err *errcode.Error) {
 	var c context.Context = ctx
 	if timeout > 0 {
 		var cancel context.CancelFunc
@@ -44,7 +44,7 @@ func (m *minioService) Upload(ctx customCtx.Context, localFilePath string, timeo
 	return objectName, nil
 }
 
-func (m *minioService) Download(ctx customCtx.Context, fileIndex, localFilePath string, timeout time.Duration) (err *errcode.Error) {
+func (m *minioService) Download(ctx *custom_ctx.Context, fileIndex, localFilePath string, timeout time.Duration) (err *errcode.Error) {
 	objectName := fileIndex
 	var c context.Context = ctx
 	if timeout > 0 {

@@ -3,9 +3,10 @@ package initialize
 import (
 	"context"
 	"go-frame/global"
-	customCtx "go-frame/internal/core/context"
+	customCtx "go-frame/internal/core/custom_ctx"
 	"time"
 
+	"github.com/coreos/etcd/clientv3"
 	"github.com/micro/go-micro/v2/client"
 	cli "github.com/micro/go-micro/v2/client/grpc"
 	"github.com/micro/go-micro/v2/registry"
@@ -18,12 +19,22 @@ func SetClients() error {
 	global.GrpcClient = newGrpcClient(global.EtcdSetting.Addresses)
 
 	// minio client
-	//var err error
-	//minioSetting := global.MinioSetting
-	//global.MinioClient, err = newMinioClient(minioSetting.Endpoint, minioSetting.AccessKeyID, minioSetting.SecretAccessKey)
-	//if err != nil {
-	////return err
-	//}
+	var err error
+	minioSetting := global.MinioSetting
+	global.MinioClient, err = minio.New(minioSetting.Endpoint, minioSetting.AccessKeyID, minioSetting.SecretAccessKey, false)
+	if err != nil {
+		return err
+	}
+
+	etcdSetting := global.EtcdSetting
+	global.EtcdClient, err = clientv3.New(clientv3.Config{
+		Endpoints:   etcdSetting.Addresses,
+		DialTimeout: 5 * time.Second,
+	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -56,8 +67,4 @@ func callLogger(fn client.CallFunc) client.CallFunc {
 
 		return err
 	}
-}
-
-func newMinioClient(endpoint, accessKeyID, secreAccessKey string) (*minio.Client, error) {
-	return minio.New(endpoint, accessKeyID, secreAccessKey, false)
 }

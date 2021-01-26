@@ -2,8 +2,8 @@ package wrapper
 
 import (
 	"context"
-	"go-frame/global"
-	customCtx "go-frame/internal/core/context"
+	"go-frame/internal/constant/proto_constant"
+	customCtx "go-frame/internal/core/custom_ctx"
 	"go-frame/internal/utils/optracing"
 
 	"github.com/micro/go-micro/v2/metadata"
@@ -16,7 +16,7 @@ import (
 func Tracing(fn server.HandlerFunc) server.HandlerFunc {
 	return func(c context.Context, req server.Request, resp interface{}) error {
 		md, _ := metadata.FromContext(c)
-		requestID := md[global.ProtocolRequestID]
+		requestID := md[proto_constant.ProtocolRequestID]
 		traceParent := md[apmhttp.W3CTraceparentHeader]
 		if len(traceParent) == 0 && len(requestID) > 0 {
 			md[apmhttp.W3CTraceparentHeader] = optracing.RequestIDToTraceparent(requestID)

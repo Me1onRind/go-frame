@@ -1,13 +1,14 @@
 package middleware
 
 import (
-	"github.com/gin-gonic/gin"
-	"go-frame/global"
-	"go-frame/internal/core/context"
+	"go-frame/internal/constant/proto_constant"
+	"go-frame/internal/core/custom_ctx"
 	"go-frame/internal/core/errcode"
 	"go-frame/internal/core/gateway"
 	"go-frame/internal/core/session"
 	"go-frame/internal/lib/auth"
+
+	"github.com/gin-gonic/gin"
 )
 
 func Login() gin.HandlerFunc {
@@ -25,8 +26,8 @@ func Login() gin.HandlerFunc {
 
 func Jwt() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token := c.GetHeader(global.ProtocolJWTTokenKey)
-		ctx := context.GetFromGinContext(c)
+		token := c.GetHeader(proto_constant.ProtocolJWTTokenKey)
+		ctx := custom_ctx.GetFromGinContext(c)
 		if err := auth.JWTAuth(ctx, token); err != nil {
 			c.JSON(200, gateway.NewResponse(err, nil))
 			c.Abort()

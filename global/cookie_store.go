@@ -7,8 +7,3 @@ import (
 var (
 	CookieStore *sessions.CookieStore
 )
-
-const (
-	UserInfoSessionKey = "accout"
-	UserSessionName    = "user"
-)

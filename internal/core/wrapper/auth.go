@@ -3,7 +3,7 @@ package wrapper
 import (
 	"context"
 	"github.com/micro/go-micro/v2/server"
-	customCtx "go-frame/internal/core/context"
+	customCtx "go-frame/internal/core/custom_ctx"
 	"go-frame/internal/lib/auth"
 )
 

@@ -2,7 +2,7 @@ package auth
 
 import (
 	"go-frame/global"
-	"go-frame/internal/core/context"
+	"go-frame/internal/core/custom_ctx"
 	"go-frame/internal/core/errcode"
 	"gorm.io/gorm"
 )
@@ -14,7 +14,7 @@ func NewAuthDao() *AuthDao {
 	return &AuthDao{}
 }
 
-func (a *AuthDao) ListAuths(ctx *context.Context, page int, pageSize int) ([]*Auth, int64, *errcode.Error) {
+func (a *AuthDao) ListAuths(ctx *custom_ctx.Context, page int, pageSize int) ([]*Auth, int64, *errcode.Error) {
 	var list []*Auth
 	var total int64
 	db := ctx.ReadDB(global.DefaultDB)
@@ -29,7 +29,7 @@ func (a *AuthDao) ListAuths(ctx *context.Context, page int, pageSize int) ([]*Au
 	return list, total, nil
 }
 
-func (a *AuthDao) GetAuthByAppKey(ctx *context.Context, appKey string) (*Auth, *errcode.Error) {
+func (a *AuthDao) GetAuthByAppKey(ctx *custom_ctx.Context, appKey string) (*Auth, *errcode.Error) {
 	var auth Auth
 	if err := ctx.ReadDB(global.DefaultDB).Where("app_key=?", appKey).Preload("Config").Take(&auth).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {

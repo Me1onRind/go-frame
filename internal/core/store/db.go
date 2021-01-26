@@ -2,7 +2,7 @@ package store
 
 import (
 	"fmt"
-	"go-frame/internal/core/context"
+	"go-frame/internal/core/custom_ctx"
 	"go-frame/internal/core/setting"
 	"go-frame/internal/utils/date"
 	"go.opentelemetry.io/otel/label"
@@ -59,7 +59,7 @@ func createCTimeAndMTime(db *gorm.DB) {
 func tracingStart() func(*gorm.DB) {
 	return func(db *gorm.DB) {
 		if db.Statement.Context != nil {
-			if ctx, ok := db.Statement.Context.(*context.Context); ok {
+			if ctx, ok := db.Statement.Context.(*custom_ctx.Context); ok {
 				ctx.Span()
 				//parentCtx := trace.ContextWithSpan(ct.Background(), ctx.Span())
 				//_, span := ctx.Span().Tracer().Start(parentCtx, "sql")
