@@ -21,6 +21,7 @@ require (
 	github.com/micro/go-plugins/registry/etcd/v2 v2.9.1
 	github.com/minio/minio-go v6.0.14+incompatible
 	github.com/opentracing/opentracing-go v1.1.0
+	github.com/robfig/cron/v3 v3.0.1
 	github.com/sirupsen/logrus v1.7.0 // indirect
 	github.com/spf13/viper v1.7.1
 	go.elastic.co/apm v1.10.0
@@ -29,7 +30,6 @@ require (
 	go.opentelemetry.io/otel v0.15.0
 	go.opentelemetry.io/otel/exporters/trace/jaeger v0.15.0
 	go.opentelemetry.io/otel/sdk v0.15.0
-	go.uber.org/atomic v1.6.0
 	go.uber.org/zap v1.16.0
 	golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899 // indirect
 	gopkg.in/ini.v1 v1.57.0 // indirect
