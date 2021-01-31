@@ -44,13 +44,14 @@ func AccessLog() gin.HandlerFunc {
 		start := time.Now()
 		defer func() {
 			end := time.Now()
-			ctx.Logger().Info("access log",
+			ctx.Logger().Info("Access log",
+				zap.String("protocol", "http"),
 				zap.String("method", c.Request.Method),
 				zap.String("path", c.Request.URL.Path),
 				zap.String("rawQuery", c.Request.URL.RawQuery),
 				zap.String("reqBody", string(request)),
 				zap.String("clientIP", c.ClientIP()),
-				zap.String("resp", lw.buff.String()),
+				zap.Any("resp", lw.buff.String()),
 				zap.Duration("cost", end.Sub(start)),
 			)
 		}()

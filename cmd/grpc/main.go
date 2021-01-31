@@ -79,7 +79,7 @@ func main() {
 		),
 		server.WrapHandler(wrapper.InitContext),
 		server.WrapHandler(wrapper.Tracing),
-		server.WrapHandler(wrapper.AccessLogger),
+		server.WrapHandler(wrapper.AccessLog),
 		//server.WrapHandler(wrapper.JWT),
 		server.WrapHandler(wrapper.Validator),
 		server.WrapHandler(wrapper.ErrHandler),

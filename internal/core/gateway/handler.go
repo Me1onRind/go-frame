@@ -1,10 +1,12 @@
 package gateway
 
 import (
-	"github.com/gin-gonic/gin"
 	"go-frame/internal/core/custom_ctx"
 	"go-frame/internal/core/errcode"
 	"reflect"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type Handler func(c *custom_ctx.Context, raw interface{}) (data interface{}, err *errcode.Error)
@@ -21,7 +23,13 @@ func Json(handler Handler, paramType interface{}) gin.HandlerFunc {
 			}
 			raw = requestParams
 		}
-		data, e := handler(ctx, raw)
+
+		var data interface{}
+		var e *errcode.Error
+		defer func() {
+			ctx.Logger().Info("Json gateway", zap.Reflect("reqObj", raw), zap.Reflect("respObj", raw))
+		}()
+		data, e = handler(ctx, raw)
 		if e == nil {
 			e = errcode.Success
 		}

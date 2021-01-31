@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func AccessLogger(fn server.HandlerFunc) server.HandlerFunc {
+func AccessLog(fn server.HandlerFunc) server.HandlerFunc {
 	return func(ctx context.Context, req server.Request, resp interface{}) error {
 		newCtx := customCtx.GetFromContext(ctx)
 		var err error
@@ -16,10 +16,11 @@ func AccessLogger(fn server.HandlerFunc) server.HandlerFunc {
 		startTime := time.Now()
 		defer func() {
 			end := time.Now()
-			newCtx.Logger().Info("GRPC Request Start",
+			newCtx.Logger().Info("Access log",
+				zap.String("protocol", "grpc"),
 				zap.String("method", req.Method()),
-				zap.Any("reqBody", req.Body()),
-				zap.Any("resp", resp),
+				zap.Reflect("reqBody", req.Body()),
+				zap.Reflect("resp", resp),
 				zap.Error(err),
 				zap.Duration("cost", end.Sub(startTime)),
 			)
