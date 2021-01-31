@@ -38,11 +38,11 @@ func NewContext(logger *zap.Logger, libCtx context.Context) *Context {
 
 func (c *Context) ReadDB(dbKey string) *gorm.DB {
 	if db := c.txs[dbKey]; db != nil {
-		return db
+		return db.WithContext(c)
 	}
 
 	if db := global.ReadDBs[dbKey]; db != nil {
-		return db
+		return db.WithContext(c)
 	}
 
 	panic(fmt.Sprintf("Can't get read db, dbKey[%s]", dbKey))
@@ -50,11 +50,11 @@ func (c *Context) ReadDB(dbKey string) *gorm.DB {
 
 func (c *Context) WriteDB(dbKey string) *gorm.DB {
 	if db := c.txs[dbKey]; db != nil {
-		return db
+		return db.WithContext(c)
 	}
 
 	if db := global.WriteDBs[dbKey]; db != nil {
-		return db
+		return db.WithContext(c)
 	}
 
 	panic(fmt.Sprintf("Can't get write db, dbKey[%s]", dbKey))

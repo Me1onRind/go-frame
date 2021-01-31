@@ -5,8 +5,8 @@ import (
 	"go-frame/internal/core/custom_ctx"
 	"go-frame/internal/core/setting"
 	"go-frame/internal/utils/date"
-	"go.opentelemetry.io/otel/label"
-	"go.opentelemetry.io/otel/trace"
+
+	"github.com/opentracing/opentracing-go"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -60,10 +60,8 @@ func tracingStart() func(*gorm.DB) {
 	return func(db *gorm.DB) {
 		if db.Statement.Context != nil {
 			if ctx, ok := db.Statement.Context.(*custom_ctx.Context); ok {
-				ctx.Span()
-				//parentCtx := trace.ContextWithSpan(ct.Background(), ctx.Span())
-				//_, span := ctx.Span().Tracer().Start(parentCtx, "sql")
-				//db.Set(spanKey, span)
+				span := ctx.Span().Tracer().StartSpan("db", opentracing.ChildOf(ctx.Span().Context()))
+				db.Set(spanKey, span)
 			}
 		}
 	}
@@ -72,15 +70,12 @@ func tracingStart() func(*gorm.DB) {
 func tracingEnd(operation string) func(*gorm.DB) {
 	return func(db *gorm.DB) {
 		if sp, ok := db.Get(spanKey); ok {
-			span := sp.(trace.Span)
-			defer span.End()
-
-			span.SetAttributes(
-				label.String("db.table", db.Statement.Table),
-				label.String("db.method", operation),
-				label.Int64("db.rowAffected", db.RowsAffected),
-				label.Bool("db.err", db.Error != nil),
-			)
+			span := sp.(opentracing.Span)
+			defer span.Finish()
+			span.SetTag("db.table", db.Statement.Table)
+			span.SetTag("db.method", operation)
+			span.SetTag("db.rowAffected", db.RowsAffected)
+			span.SetTag("db.err", db.Error)
 		}
 	}
 }
