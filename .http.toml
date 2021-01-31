@@ -1,0 +1,17 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+cmd = "go build -o ./tmp/main ./cmd/http/main.go"
+full_bin = "./tmp/main"
+include_ext = ["go"]
+exclude_dir = ["vendor"]
+
+delay = 500
+stop_on_error = true
+send_interrupt = false
+kill_delay = 50
+
+[misc]
+clean_on_exit = true
+

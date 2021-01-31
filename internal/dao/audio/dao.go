@@ -6,6 +6,7 @@ import (
 	"go-frame/internal/core/errcode"
 
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 type AudioDao struct{}
@@ -41,4 +42,44 @@ func (a *AudioDao) GetUnsyncAudioList(ctx *custom_ctx.Context, minID uint64, lim
 		return nil, errcode.DBError.WithError(err)
 	}
 	return result, nil
+}
+
+func (a *AudioDao) GetAudioByID(ctx *custom_ctx.Context, id uint64) (*Audio, *errcode.Error) {
+	db := ctx.ReadDB(global.DefaultDB)
+	audio := &Audio{
+		ID: id,
+	}
+	if err := db.First(audio).Error; err != nil {
+		if err != gorm.ErrRecordNotFound {
+			return nil, errcode.DBError.WithError(err)
+		}
+		return nil, nil
+	}
+	return audio, nil
+}
+
+func (a *AudioDao) GetAudioByFilename(ctx *custom_ctx.Context, filename string) (*Audio, *errcode.Error) {
+	db := ctx.ReadDB(global.DefaultDB)
+	audio := &Audio{}
+	if err := db.Where("filename=?", filename).First(audio).Error; err != nil {
+		if err != gorm.ErrRecordNotFound {
+			return nil, errcode.DBError.WithError(err)
+		}
+		return nil, nil
+	}
+	return audio, nil
+}
+
+func (a *AudioDao) Search(ctx *custom_ctx.Context, conds map[string]interface{}, page, pageSize int) (result []*Audio, total int64, err *errcode.Error) {
+	db := ctx.ReadDB(global.DefaultDB)
+	if err := db.Model(&result).Where(conds).Count(&total).Error; err != nil {
+		ctx.Logger().Error("Search audio failed", zap.Any("conds", conds), zap.Error(err))
+		return nil, 0, errcode.DBError.WithError(err)
+	}
+
+	if err := db.Where(conds).Offset((page - 1) * pageSize).Limit(pageSize).Find(&result).Error; err != nil {
+		ctx.Logger().Error("Search audio failed", zap.Any("conds", conds), zap.Error(err))
+		return nil, 0, errcode.DBError.WithError(err)
+	}
+	return result, total, nil
 }

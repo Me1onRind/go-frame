@@ -8,5 +8,4 @@ func (r *RetryTaskJob) Run() {
 	// get jobs and update excute time
 	// unlock
 	// async excute
-
 }

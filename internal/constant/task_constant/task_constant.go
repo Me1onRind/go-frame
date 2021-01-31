@@ -2,7 +2,8 @@ package task_constant
 
 const (
 	_ uint8 = iota
-	Todo
+	Doing
 	Done
-	Close
+	Expection
+	ArriveLimit
 )

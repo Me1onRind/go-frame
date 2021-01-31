@@ -15,6 +15,7 @@ func NewRouter() *gin.Engine {
 	apiRouter := r.Group("/api")
 	registerUserApi(apiRouter)
 	registerJWTApi(apiRouter)
+	registerAudioApi(apiRouter)
 
 	return r
 }

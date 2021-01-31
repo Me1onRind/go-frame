@@ -10,6 +10,7 @@ import (
 func InitContext() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx := custom_ctx.NewContext(global.Logger, nil)
+		ctx.GinCtx = c
 		custom_ctx.LoadIntoGinContext(ctx, c)
 	}
 }

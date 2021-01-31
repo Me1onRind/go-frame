@@ -23,11 +23,17 @@ func (w *logWriter) Write(b []byte) (int, error) {
 func AccessLog() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx := custom_ctx.GetFromGinContext(c)
-		request, err := c.GetRawData()
-		if err != nil {
-			ctx.Logger().Error("Get request body error", zap.Error(err))
+		var request []byte
+
+		contentType := c.ContentType()
+		if contentType == "application/json" || contentType == "text/plain" {
+			var err error
+			request, err = c.GetRawData()
+			if err != nil {
+				ctx.Logger().Error("Get request body error", zap.Error(err))
+			}
+			c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(request))
 		}
-		c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(request))
 
 		lw := &logWriter{
 			ResponseWriter: c.Writer,
