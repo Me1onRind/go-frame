@@ -49,7 +49,7 @@ func (t *TaskDao) GetValidExecTasks(ctx *custom_ctx.Context, limit int) ([]*Task
 
 	now := date.UnixTime()
 	db := ctx.ReadDB(global.DefaultDB)
-	if err := db.Where("next_exec_time < ?", now).Where("status = ?", task_constant.Todo).Limit(limit).Find(&result).Error; err != nil {
+	if err := db.Where("next_exec_time < ?", now).Where("status = ?", task_constant.Doing).Limit(limit).Find(&result).Error; err != nil {
 		ctx.Logger().Error("Get valid exec tasks failed", zap.Error(err))
 		return nil, errcode.DBError.WithError(err)
 	}

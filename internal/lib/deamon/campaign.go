@@ -57,7 +57,7 @@ func Campaign(ctx *custom_ctx.Context, wg *sync.WaitGroup) (success <-chan struc
 					ctx.Logger().Error("Campaign has done")
 				case <-c.Done():
 					ctxTmp, cancel := context.WithTimeout(context.Background(), time.Second*1)
-					election.Resign(ctxTmp)
+					_ = election.Resign(ctxTmp)
 					session.Close()
 					cancel()
 					return
