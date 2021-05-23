@@ -14,8 +14,9 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator/v10 v10.4.1
+	github.com/go-redis/redis/v8 v8.8.3
 	github.com/golang/protobuf v1.4.3
-	github.com/google/go-cmp v0.5.4 // indirect
+	github.com/google/uuid v1.1.1
 	github.com/gorilla/sessions v1.2.1
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/micro/go-micro/v2 v2.9.1

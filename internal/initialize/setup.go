@@ -26,6 +26,8 @@ func SetupStore() error {
 	}
 	global.ReadDBs[global.DefaultDB] = readDB
 
+	global.Redis = store.NewRedisClientPool(global.RedisSetting)
+
 	return nil
 }
 

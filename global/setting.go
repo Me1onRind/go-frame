@@ -14,4 +14,5 @@ var (
 	JWTSetting         *setting.JWTSettingS
 	EtcdSetting        *setting.EtcdSettingS
 	MinioSetting       *setting.MinioSettingS
+	RedisSetting       *setting.RedisSettings
 )

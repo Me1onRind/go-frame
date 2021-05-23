@@ -40,3 +40,12 @@ func (a *AuthDao) GetAuthByAppKey(ctx *custom_ctx.Context, appKey string) (*Auth
 
 	return &auth, nil
 }
+
+func (a *AuthDao) GetRolesByRoleIDs(ctx *custom_ctx.Context, roleIDs []uint32) ([]*Role, *errcode.Error) {
+	var roles []*Role
+	if err := ctx.ReadDB(global.DefaultDB).Where("role_id in ?", roleIDs).Find(&roles).Error; err != nil {
+		return nil, errcode.DBError.WithError(err)
+	}
+
+	return roles, nil
+}

@@ -7,7 +7,7 @@ import (
 type HttpServerSettingS struct {
 	RunMode string
 	Host    string
-	Port    uint32
+	Port    uint16
 	Cookies struct {
 		StoreType string
 		SecretKey string
@@ -16,7 +16,7 @@ type HttpServerSettingS struct {
 
 type GrpcServerSettingS struct {
 	Host             string
-	Port             uint32
+	Port             uint16
 	Name             string
 	RegistryTimeout  time.Duration
 	RegistryInterVal time.Duration
@@ -24,7 +24,7 @@ type GrpcServerSettingS struct {
 
 type DBSettingS struct {
 	Host               string
-	Port               uint32
+	Port               uint16
 	Username           string
 	Password           string
 	DBName             string
@@ -57,4 +57,9 @@ type MinioSettingS struct {
 	AccessKeyID     string
 	SecretAccessKey string
 	BucketName      string
+}
+
+type RedisSettings struct {
+	Host string
+	Port uint16
 }

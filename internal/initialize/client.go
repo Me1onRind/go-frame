@@ -26,6 +26,7 @@ func SetClients() error {
 		return err
 	}
 
+	// etcd client
 	etcdSetting := global.EtcdSetting
 	global.EtcdClient, err = clientv3.New(clientv3.Config{
 		Endpoints:   etcdSetting.Addresses,

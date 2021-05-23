@@ -18,7 +18,7 @@ func Json(handler Handler, paramType interface{}) gin.HandlerFunc {
 		if paramType != nil {
 			requestParams := parserProtocol(paramType)
 			if err := c.ShouldBind(requestParams); err != nil {
-				c.JSON(200, errcode.InvalidParam.WithError(err))
+				c.JSON(200, NewResponse(errcode.InvalidParam.WithError(err), nil))
 				return
 			}
 			raw = requestParams

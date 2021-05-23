@@ -27,3 +27,15 @@ type AuthConfig struct {
 func (a *AuthConfig) TableName() string {
 	return "auth_config_tab"
 }
+
+type Role struct {
+	ID       uint64 `gorm:"column:id;primaryKey" json:"id"`
+	RoleID   uint64 `gorm:"column:role_id" json:"role_id"`
+	RoleName string `gorm:"column:role_name" json:"role_name"`
+	CTime    uint32 `gorm:"column:ctime" json:"ctime"`
+	MTime    uint32 `gorm:"column:mtime" json:"mtime"`
+}
+
+func (r *Role) TableName() string {
+	return "role_tab"
+}

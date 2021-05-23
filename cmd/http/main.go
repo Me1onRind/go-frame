@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"go-frame/global"
 	"go-frame/internal/core/setting"
 	"go-frame/internal/initialize"
 	"go-frame/internal/routers"
+
+	"github.com/gin-gonic/gin"
 )
 
 func init() {
@@ -46,6 +47,7 @@ func SetupHttpSetting() error {
 		"JWT":          &global.JWTSetting,
 		"Etcd":         &global.EtcdSetting,
 		"Minio":        &global.MinioSetting,
+		"Redis":        &global.RedisSetting,
 	}
 
 	for k, v := range LoadSections {

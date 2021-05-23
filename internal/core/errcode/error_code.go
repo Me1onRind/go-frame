@@ -15,6 +15,8 @@ const (
 	UploadFileErrorcode     int = 1000010
 	FileOperationErrorcode  int = 1000011
 	RecordExistErrorCode    int = 1000012
+	JsonMarchalErrorCode    int = 1000013
+	JsonUnMarchalErrorCode  int = 1000014
 
 	InvalidLoginParamCode int = 2000000
 	UnLoginCode           int = 2000001
@@ -39,6 +41,8 @@ var (
 	UploadFileError    = NewError(UploadFileErrorcode, "Upload File Error")
 	FileOperationError = NewError(FileOperationErrorcode, "File Operation Error")
 	RecordExistError   = NewError(RecordExistErrorCode, "Record Exist")
+	JsonMarchalError   = NewError(JsonMarchalErrorCode, "Json Marchal Error")
+	JsonUnMarchalError = NewError(JsonUnMarchalErrorCode, "Json Marchal Error")
 
 	InvalidLoginParamError = NewError(InvalidLoginParamCode, "Invalid Username Or Password")
 	UnLoginError           = NewError(UnLoginCode, "Not Login")

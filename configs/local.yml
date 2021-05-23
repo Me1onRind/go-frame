@@ -42,6 +42,10 @@ JWT:
   Issuser: "mr"
   Secret: "dfhwehkn323"
 
+Redis:
+  Host: "localhost"
+  Port: 6379
+
 Etcd:
   Addresses:
     - "127.0.0.1:2379"
